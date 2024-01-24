@@ -1,6 +1,6 @@
 // LocationContext.js
-import React, { createContext, useContext, useState } from 'react';
-import * as Location from 'expo-location';
+import React, { createContext, useContext, useState } from "react";
+import * as Location from "expo-location";
 
 const LocationContext = createContext();
 
@@ -15,8 +15,8 @@ export const LocationProvider = ({ children }) => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
-      if (status !== 'granted') {
-        setErrorMsg('Permissão para acessar a localização negada');
+      if (status !== "granted") {
+        setErrorMsg("Permissão para acessar a localização negada");
         setLoadingLocation(false);
         return;
       }
@@ -24,14 +24,29 @@ export const LocationProvider = ({ children }) => {
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
 
-    console.log( location);
+      reverseGeocode(latitude, longitude);
+    } catch (error) {
+      console.error("Erro ao obter localização:", error);
+      setErrorMsg("Erro ao obter a localização");
+      setLoadingLocation(false);
+    }
+  };
 
-      setUserLocation({ latitude, longitude });
+  const reverseGeocode = async (latitude, longitude) => {
+    try {
+      const apiKey = "fbb87def325a48768cbc78cc3708bc9f";
+      const apiUrl = `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${latitude}+${longitude}&pretty=1`;
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      const formattedAddress = data.results[0].formatted;
+      setUserLocation(formattedAddress);
       setLoadingLocation(false);
       setErrorMsg(null);
     } catch (error) {
-      console.error('Erro ao obter localização:', error);
-      setErrorMsg('Erro ao obter a localização');
+      console.error("Erro na geocodificação reversa:", error);
+      setErrorMsg("Erro na geocodificação reversa");
       setLoadingLocation(false);
     }
   };
@@ -43,6 +58,7 @@ export const LocationProvider = ({ children }) => {
         loadingLocation,
         errorMsg,
         handleUseMyLocation,
+        reverseGeocode,
       }}
     >
       {children}
@@ -53,7 +69,7 @@ export const LocationProvider = ({ children }) => {
 export const useLocation = () => {
   const context = useContext(LocationContext);
   if (!context) {
-    throw new Error('useLocation deve ser usado dentro de um LocationProvider');
+    throw new Error("useLocation deve ser usado dentro de um LocationProvider");
   }
   return context;
 };

@@ -7,14 +7,17 @@ import {
   InputField,
   InputIcon,
   InputSlot,
+  ScrollView,
   SearchIcon,
+  StatusBar,
   View,
 } from "@gluestack-ui/themed";
 import { Feather } from "@expo/vector-icons";
-import Card from "../components/Card/Card";
+import EstablishmentCard from "../components/EstablishmentCard/EstablishmentCard";
 export default function Home() {
   return (
     <>
+      <StatusBar barStyle="light-content" backgroundColor="#2C2C96" />
       <View height={"100%"} alignItems="center">
         <Header />
         <HStack
@@ -31,7 +34,9 @@ export default function Home() {
           </Input>
           <Feather name="filter" size={24} color="black" />
         </HStack>
-        <Card />
+        <ScrollView width={"100%"}>
+          <EstablishmentCard />
+        </ScrollView>
       </View>
     </>
   );

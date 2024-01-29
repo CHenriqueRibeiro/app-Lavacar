@@ -37,7 +37,7 @@ export default function Card() {
     navigation.navigate("Establishment");
   };
   return (
-    <VStack alignItems="center" gap={12} mt={8} mb={8}>
+    <VStack alignItems="center" gap={12} mt={12} mb={8} paddingTop={8}>
       <VStack
         overflow="hidden"
         width="95%"

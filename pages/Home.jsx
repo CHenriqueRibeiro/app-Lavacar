@@ -34,7 +34,7 @@ export default function Home() {
           </Input>
           <Feather name="filter" size={24} color="black" />
         </HStack>
-        <ScrollView width={"100%"}>
+        <ScrollView width={"100%"} >
           <EstablishmentCard />
         </ScrollView>
       </View>

@@ -34,7 +34,7 @@ export default function LocationScreen() {
           justifyContent: "space-between",
         }}
       >
-        <Heading color="$white">Lavacar</Heading>
+        <Heading color="$white">LavaJá</Heading>
         <VStack
           borderTopLeftRadius={"$3xl"}
           borderTopRightRadius={"$3xl"}

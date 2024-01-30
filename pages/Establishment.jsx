@@ -19,7 +19,7 @@ export default function Establishment() {
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#2C2C96" />
-      <View flex={1} alignItems="center">
+      <View flex={1} alignItems="center" backgroundColor="#E9EDF0">
         <VStack
           height={300}
           width={"100%"}
@@ -53,15 +53,15 @@ export default function Establishment() {
               paddingLeft={8}
             >
               <Heading color="white"> Limpinho Lavajato</Heading>
-              <HStack gap={5}>
+              <HStack gap={5} alignItems="center">
                 <Fontisto name="whatsapp" size={24} color="white" />
                 <Text color="white">85 988888888</Text>
               </HStack>
-              <HStack gap={5}>
+              <HStack gap={5} alignItems="center">
                 <FontAwesome6 name="map-location-dot" size={20} color="white" />
                 <Text color="white">Rua 333, 155</Text>
               </HStack>
-              <HStack gap={5}>
+              <HStack gap={5} alignItems="center">
                 <Entypo name="info-with-circle" size={24} color="white" />
                 <Text color="white">+ informações</Text>
               </HStack>

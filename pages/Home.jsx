@@ -26,7 +26,7 @@ export default function Home() {
           justifyContent="space-evenly"
           alignItems="center"
         >
-          <Input width={"85%"}>
+          <Input width={"85%"} marginBottom={8}>
             <InputSlot pl={5}>
               <InputIcon as={SearchIcon} />
             </InputSlot>

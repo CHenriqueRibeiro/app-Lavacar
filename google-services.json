@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "758673059930",
+    "project_id": "lavajaapp-41d64",
+    "storage_bucket": "lavajaapp-41d64.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758673059930:android:3c47b758340a96375b2863",
+        "android_client_info": {
+          "package_name": "com.henriqueribeiro.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiBnMIdWT9lofwBD-W6Np2btVTeCBCx2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

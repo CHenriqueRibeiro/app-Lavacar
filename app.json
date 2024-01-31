@@ -13,14 +13,19 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "com.henriqueribeiro.myapp",
+      "buildNumber": "1",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/logosemfundo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.henriqueribeiro.myapp"
+      "package": "com.henriqueribeiro.myapp",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/logosemfundo.png"
@@ -29,6 +34,19 @@
       "eas": {
         "projectId": "e9436220-38ac-4943-be4d-3013fcaebcd3"
       }
-    }
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/crashlytics",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
   }
 }

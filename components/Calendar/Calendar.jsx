@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import moment from "moment";
 import Date from "../../Time/Date";
 
@@ -58,7 +58,7 @@ const Calendar = ({ onSelectDate, selected }) => {
       <VStack
         style={{
           width: "100%",
-          height: 300,
+          height: 240,
           paddingBottom: 20,
         }}
       >
@@ -86,9 +86,7 @@ const Calendar = ({ onSelectDate, selected }) => {
         >
           <DiagonalTimeline onSelectHour={handleHourSelection} />
         </ScrollView>
-        <Button>
-          <ButtonText>Marcar Horario</ButtonText>
-        </Button>
+        
       </VStack>
     </>
   );

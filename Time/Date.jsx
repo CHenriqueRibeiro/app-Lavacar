@@ -18,7 +18,7 @@ const Date = ({ date, onSelectDate, selected }) => {
       onPress={() => onSelectDate(fullDate)}
       style={[
         styles.card,
-        isSelected && { backgroundColor: "#6146c6", color: "#fff" },
+        isSelected && { backgroundColor: "#4D0288", color: "#fff" },
         !isToday && !isSelected && { backgroundColor: "#eee" },
       ]}
     >

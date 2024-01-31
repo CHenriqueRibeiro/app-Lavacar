@@ -41,7 +41,7 @@ export default function Card() {
       <VStack
         overflow="hidden"
         width="95%"
-        backgroundColor="$indigo700"
+        backgroundColor="#4D0288"
         height={300}
         borderRadius={10}
         style={{
@@ -93,8 +93,8 @@ export default function Card() {
               bg="$white"
               onPress={handleContinue}
             >
-              <ButtonText color="$indigo700">Agendar</ButtonText>
-              <MaterialIcons name="schedule-send" size={24} color="#4338CA" />
+              <ButtonText color="#4D0288">Agendar</ButtonText>
+              <MaterialIcons name="schedule-send" size={24} color="#4D0288" />
             </Button>
           </HStack>
         </VStack>
@@ -102,7 +102,7 @@ export default function Card() {
       <VStack
         overflow="hidden"
         width="95%"
-        backgroundColor="$indigo700"
+        backgroundColor="#4D0288"
         height={300}
         borderRadius={10}
         style={{
@@ -153,8 +153,8 @@ export default function Card() {
               justifyContent="space-around"
               bg="$white"
             >
-              <ButtonText color="$indigo700">Agendar</ButtonText>
-              <MaterialIcons name="schedule-send" size={24} color="#4338CA" />
+              <ButtonText color="#4D0288">Agendar</ButtonText>
+              <MaterialIcons name="schedule-send" size={24} color="#4D0288" />
             </Button>
           </HStack>
         </VStack>
@@ -162,7 +162,7 @@ export default function Card() {
       <VStack
         overflow="hidden"
         width="95%"
-        backgroundColor="$indigo700"
+        backgroundColor="#4D0288"
         height={300}
         borderRadius={10}
         style={{
@@ -214,8 +214,8 @@ export default function Card() {
               justifyContent="space-around"
               bg="$white"
             >
-              <ButtonText color="$indigo700">Agendar</ButtonText>
-              <MaterialIcons name="schedule-send" size={24} color="#4338CA" />
+              <ButtonText color="#4D0288">Agendar</ButtonText>
+              <MaterialIcons name="schedule-send" size={24} color="#4D0288" />
             </Button>
           </HStack>
         </VStack>

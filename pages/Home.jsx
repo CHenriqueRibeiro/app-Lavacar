@@ -17,8 +17,8 @@ import EstablishmentCard from "../components/EstablishmentCard/EstablishmentCard
 export default function Home() {
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#2C2C96" />
-      <View height={"100%"} alignItems="center">
+      <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
+      <View height={"100%"} alignItems="center " backgroundColor="#E9EDF0">
         <Header />
         <HStack
           marginTop={12}
@@ -34,7 +34,7 @@ export default function Home() {
           </Input>
           <Feather name="filter" size={24} color="black" />
         </HStack>
-        <ScrollView width={"100%"} >
+        <ScrollView width={"100%"}>
           <EstablishmentCard />
         </ScrollView>
       </View>

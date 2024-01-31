@@ -18,12 +18,12 @@ import ServiceCard from "../components/ServiceCard/ServiceCard";
 export default function Establishment() {
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#2C2C96" />
+      <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
       <View flex={1} alignItems="center" backgroundColor="#E9EDF0">
         <VStack
           height={300}
           width={"100%"}
-          backgroundColor="$indigo700"
+          backgroundColor="#4D0288"
           alignItems="center"
           borderBottomLeftRadius={15}
           borderBottomRightRadius={15}

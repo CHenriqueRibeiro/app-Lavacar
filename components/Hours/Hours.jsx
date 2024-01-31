@@ -23,7 +23,7 @@ const DiagonalTimeline = ({ onSelectHour }) => {
         style={{
           width: 70,
           height: "100%",
-          backgroundColor: selectedHour === hour ? "#6146c6" : "#eee",
+          backgroundColor: selectedHour === hour ? "#4D0288" : "#eee",
           borderRadius: 5,
           alignItems: "center",
           justifyContent: "center",

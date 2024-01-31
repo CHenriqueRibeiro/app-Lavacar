@@ -13,7 +13,7 @@ export default function CustomTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          backgroundColor: "#4338CA",
+          backgroundColor: "#4D0288",
           borderTopWidth: 0,
           position: "absolute",
           left: 14,
@@ -22,10 +22,13 @@ export default function CustomTabs() {
           borderRadius: 10,
         },
         tabBarShowLabel: false,
-        tabBarIcon: ({ size, color }) => {
+        tabBarIcon: ({ size, color, focused }) => {
           let iconName;
+          let iconColor;
 
           if (route.name === "Home") {
+            iconColor = focused ? "#FFFFFF" : "#4D0288";
+
             return (
               <View
                 style={{
@@ -33,8 +36,8 @@ export default function CustomTabs() {
                   alignItems: "center",
                   width: 60,
                   height: 60,
-                  backgroundColor: "#4338CA",
-                  borderRadius: 30, 
+                  backgroundColor: focused ? "#FFFFFF" : "#4D0288",
+                  borderRadius: 30,
                 }}
               >
                 <View
@@ -42,12 +45,16 @@ export default function CustomTabs() {
                     width: 40,
                     height: 40,
                     borderRadius: 20,
-                    backgroundColor: "white",
+                    backgroundColor: focused ? "#4D0288" : "#FFFFFF",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <MaterialIcons name="home" size={size} color={"#4338CA"} />
+                  <MaterialIcons
+                    name="calendar-month"
+                    size={size}
+                    color={focused ? "#FFFFFF" : "#4D0288"}
+                  />
                 </View>
               </View>
             );
@@ -55,13 +62,19 @@ export default function CustomTabs() {
 
           if (route.name === "Scheduling") {
             iconName = "schedule";
+
+            iconColor = focused ? "#FFFFFF" : color;
           }
 
           if (route.name === "Account") {
             iconName = "account-circle";
+
+            iconColor = focused ? "#FFFFFF" : color;
           }
 
-          return <MaterialIcons name={iconName} size={size} color={color} />;
+          return (
+            <MaterialIcons name={iconName} size={size} color={iconColor} />
+          );
         },
         headerShown: false,
       })}

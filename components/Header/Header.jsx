@@ -11,7 +11,7 @@ import { Entypo } from "@expo/vector-icons";
 export default function Header() {
   return (
     <HStack
-      bg="$indigo700"
+      bg="#4D0288"
       width={"100%"}
       height={120}
       alignItems="center"
@@ -24,7 +24,7 @@ export default function Header() {
         justifyContent="space-between"
       >
         <Avatar bgColor="$white" size="md" borderRadius="$lg">
-          <AvatarFallbackText color="$indigo700">
+          <AvatarFallbackText color="#4D0288">
             Henrique Ribeiro
           </AvatarFallbackText>
         </Avatar>

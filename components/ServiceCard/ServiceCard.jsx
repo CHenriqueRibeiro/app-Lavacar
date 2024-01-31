@@ -15,7 +15,7 @@ import {
 } from "@gluestack-ui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import Calendar from "../Calendar/Calendar"; // Certifique-se de importar corretamente o componente Calendar
+import Calendar from "../Calendar/Calendar"; 
 
 export default function ServiceCard() {
   const [showActionsheet, setShowActionsheet] = useState(false);
@@ -28,6 +28,7 @@ export default function ServiceCard() {
       width={"100%"}
       backgroundColor="#FFFFFF"
       borderRadius={15}
+    
     >
       <HStack
         alignItems="center"
@@ -36,12 +37,17 @@ export default function ServiceCard() {
         justifyContent="space-around"
       >
         <Box
-          backgroundColor="$indigo700"
+          backgroundColor="#4D0288"
           height={"75%"}
           width={"30%"}
           alignItems="center"
           justifyContent="center"
           borderRadius={15}
+          style={{
+            shadowRadius: 30,
+            elevation: 8,
+            shadowColor: "black",
+          }}
         >
           <MaterialIcons name="local-car-wash" size={24} color="white" />
         </Box>
@@ -63,12 +69,14 @@ export default function ServiceCard() {
 
       <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
         <ActionsheetBackdrop />
-        <ActionsheetContent >
+        <ActionsheetContent>
           <ActionsheetDragIndicatorWrapper>
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper>
           <Calendar onSelectDate={setSelectedDate} selected={selectedDate} />
-          
+          <Button onPress={handleClose} marginBottom={15} width={"75%"}>
+            <ButtonText>Marcar Horario</ButtonText>
+          </Button>
         </ActionsheetContent>
       </Actionsheet>
     </View>

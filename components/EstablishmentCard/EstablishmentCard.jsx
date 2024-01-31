@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { View, Dimensions, StyleSheet } from "react-native";
+
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import {
   VStack,
   HStack,
   Heading,
   Text,
-  Box,
+ 
   Button,
   ButtonText,
   Image,
+  View,
 } from "@gluestack-ui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Dimensions, StyleSheet } from "react-native";
 
 const images = [
   "https://img.freepik.com/fotos-gratis/lavadora-profissional-em-uniforme-azul-lavando-carro-de-luxo-com-pistola-de-agua-em-um-lava-jato-a-ceu-aberto_496169-333.jpg?size=626&ext=jpg&ga=GA1.1.632798143.1705276800&semt=sph",

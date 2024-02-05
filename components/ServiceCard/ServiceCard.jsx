@@ -15,7 +15,7 @@ import {
 } from "@gluestack-ui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import Calendar from "../Calendar/Calendar"; 
+import Calendar from "../Calendar/Calendar";
 
 export default function ServiceCard() {
   const [showActionsheet, setShowActionsheet] = useState(false);
@@ -28,7 +28,6 @@ export default function ServiceCard() {
       width={"100%"}
       backgroundColor="#FFFFFF"
       borderRadius={15}
-    
     >
       <HStack
         alignItems="center"

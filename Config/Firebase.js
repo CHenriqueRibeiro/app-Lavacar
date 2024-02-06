@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase, ref, get } from "firebase/database"; 
+
 const firebaseConfig = {
   apiKey: "AIzaSyDZDt-6OXvlchj6iZMVTus3FjxOiSOpKqs",
   authDomain: "lavajaapp-41d64.firebaseapp.com",
@@ -12,4 +14,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-export default db;
+const realtimeDatabase = getDatabase(app);
+
+export { db, realtimeDatabase, ref, get };  

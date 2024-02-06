@@ -1,4 +1,4 @@
-// LocationContext.js
+
 import React, { createContext, useContext, useState } from "react";
 import * as Location from "expo-location";
 

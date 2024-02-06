@@ -1,6 +1,5 @@
 import {
   Box,
-  Center,
   HStack,
   Heading,
   Image,
@@ -15,7 +14,8 @@ import { Fontisto } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import ServiceCard from "../components/ServiceCard/ServiceCard";
-export default function Establishment() {
+export default function Establishment({ route }) {
+  const { empresaData } = route.params;
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
@@ -52,14 +52,14 @@ export default function Establishment() {
               justifyContent="space-between"
               paddingLeft={8}
             >
-              <Heading color="white"> Limpinho Lavajato</Heading>
+              <Heading color="white"> {empresaData.NomeDaEmpresa}</Heading>
               <HStack gap={5} alignItems="center">
                 <Fontisto name="whatsapp" size={24} color="white" />
-                <Text color="white">85 988888888</Text>
+                <Text color="white">{empresaData.DadosDaEmpresa.Telefone}</Text>
               </HStack>
               <HStack gap={5} alignItems="center">
                 <FontAwesome6 name="map-location-dot" size={20} color="white" />
-                <Text color="white">Rua 333, 155</Text>
+                <Text color="white">{empresaData.DadosDaEmpresa.Endereco}</Text>
               </HStack>
               <HStack gap={5} alignItems="center">
                 <Entypo name="info-with-circle" size={24} color="white" />
@@ -69,7 +69,7 @@ export default function Establishment() {
           </HStack>
         </VStack>
         <ScrollView width={"95%"} backgroundColor="#E9EDF0" marginTop={15}>
-          <ServiceCard />
+        <ServiceCard servicos={empresaData.Servicos} />
         </ScrollView>
       </View>
     </>

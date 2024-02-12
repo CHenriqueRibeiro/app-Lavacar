@@ -17,13 +17,20 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import Calendar from "../Calendar/Calendar";
-
-
+import { formatCurrency } from "../../Services/FormatCurrency";
+import { useFirebase } from "../../context/FirebaseContext";
 
 export default function ServiceCard({ servicos }) {
-  const [showActionsheet, setShowActionsheet] = useState(false);
+  const {
+    horarioReservado,
+    servicoEscolhido,
+    agendamento,
+    lerAgendamento,
+    showActionsheet,
+    handleClose,
+  } = useFirebase();
+
   const [selectedDate, setSelectedDate] = useState(null);
-  const handleClose = () => setShowActionsheet(!showActionsheet);
 
   return (
     <ScrollView vertical width={"100%"}>
@@ -62,9 +69,9 @@ export default function ServiceCard({ servicos }) {
               height={"75%"}
               justifyContent="space-between"
             >
-              <Text>{nomeServico}</Text>
-              <Text>{valorServico}</Text>
-              <Button gap={5} onPress={handleClose}>
+              <Heading>{nomeServico}</Heading>
+              <Heading>{formatCurrency(valorServico)}</Heading>
+              <Button gap={5} onPress={lerAgendamento}>
                 <ButtonText>Agendar Serviço</ButtonText>
                 <MaterialIcons name="schedule-send" size={24} color="white" />
               </Button>
@@ -90,4 +97,3 @@ export default function ServiceCard({ servicos }) {
     </ScrollView>
   );
 }
-

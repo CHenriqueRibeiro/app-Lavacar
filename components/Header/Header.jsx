@@ -8,7 +8,9 @@ import {
 } from "@gluestack-ui/themed";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import { useAuth } from "../../context/AuthContext";
 export default function Header() {
+  const { user } = useAuth();
   return (
     <HStack
       bg="#4D0288"
@@ -24,9 +26,7 @@ export default function Header() {
         justifyContent="space-between"
       >
         <Avatar bgColor="$white" size="md" borderRadius="$lg">
-          <AvatarFallbackText color="#4D0288">
-            Henrique Ribeiro
-          </AvatarFallbackText>
+          <AvatarFallbackText color="#4D0288">{user.email}</AvatarFallbackText>
         </Avatar>
         <VStack alignItems="center" gap={5}>
           <Text fontSize={14} color="#FFFFFF">

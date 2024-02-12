@@ -1,16 +1,21 @@
-import React from 'react';
-import { GluestackUIProvider, Box } from "@gluestack-ui/themed";
+import React, { useState } from "react";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
-
 import { LocationProvider } from "./context/LocationContext";
-import AppNavigator from './routes/AppNavigator';
+import AppNavigator from "./routes/AppNavigator";
+import { FirebaseProvider } from "./context/FirebaseContext";
+import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
   return (
     <GluestackUIProvider config={config}>
-      <LocationProvider>
-        <AppNavigator />
-      </LocationProvider>
+      <AuthProvider>
+        <FirebaseProvider>
+          <LocationProvider>
+            <AppNavigator />
+          </LocationProvider>
+        </FirebaseProvider>
+      </AuthProvider>
     </GluestackUIProvider>
   );
 }

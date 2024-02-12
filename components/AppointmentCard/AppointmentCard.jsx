@@ -10,7 +10,32 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../Config/Firebase";
 export default function AppointmentCard() {
+  const [horarioReservado, setHorarioReservado] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const docRef = doc(db, "Estabelecimentos", "Empresa 1");
+
+      try {
+        const docSnap = await getDoc(docRef);
+        const horarioReservadoData = docSnap.data().HorarioReservado || {};
+
+        if (docSnap.exists()) {
+          setHorarioReservado(horarioReservadoData);
+        } else {
+          console.log("Nao tem documento!");
+        }
+      } catch (error) {
+        console.error("Error getting document:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <View
       height={180}
@@ -43,15 +68,17 @@ export default function AppointmentCard() {
         <VStack height={150} justifyContent="space-between">
           <HStack alignItems="center">
             <MaterialIcons name="local-car-wash" size={24} color="black" />
-            <Text fontSize={18}>Limpinho LavaJato</Text>
+            <Text fontSize={18}>{horarioReservado.Estabelecimeto}</Text>
           </HStack>
           <HStack alignItems="center">
             <MaterialIcons name="cleaning-services" size={24} color="black" />
-            <Text fontSize={18}>Lavagem Simples</Text>
+            <Text fontSize={18}>{horarioReservado.Servico}</Text>
           </HStack>
           <HStack alignItems="center">
             <AntDesign name="calendar" size={24} color="black" />
-            <Text fontSize={18}>18/01/2024 - 14:00</Text>
+            <Text fontSize={18}>
+              {horarioReservado.Data} - {horarioReservado.Hora}
+            </Text>
           </HStack>
           <Button alignItems="center" backgroundColor="$error700" gap={15}>
             <MaterialIcons name="cancel" size={20} color="white" />

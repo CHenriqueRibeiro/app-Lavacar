@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getDatabase, ref, get } from "firebase/database"; 
-
+import { getDatabase, ref, get } from "firebase/database";
+import { getAuth } from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyDZDt-6OXvlchj6iZMVTus3FjxOiSOpKqs",
   authDomain: "lavajaapp-41d64.firebaseapp.com",
@@ -13,7 +13,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const firebaseAuth = getAuth(app);
 const db = getFirestore(app);
 const realtimeDatabase = getDatabase(app);
 
-export { db, realtimeDatabase, ref, get };  
+export { db, realtimeDatabase, ref, get, firebaseAuth };

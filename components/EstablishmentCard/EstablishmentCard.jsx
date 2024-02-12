@@ -124,6 +124,7 @@ const HomeScreen = () => {
         empresasSnapshot.forEach((empresaDoc) => {
           const data = empresaDoc.data();
           empresasData.push(data);
+          
         });
 
         setEmpresaDataList(empresasData);
@@ -145,12 +146,12 @@ const HomeScreen = () => {
   return (
     <ScrollView vertical pb={65}>
       <VStack alignItems="center" gap={12} mb={8} paddingTop={8}>
-        {empresaDataList.map((empresaData, index) => (
-          <Card
+         {empresaDataList.map((empresaData, index) => (
+         <Card
             key={index}
             index={index}
             empresaData={empresaData}
-            onPress={() => handleCardPress(empresaData)} // Adicione essa linha para passar os dados ao pressionar o card
+            onPress={() => handleCardPress(empresaData)}
           />
         ))}
       </VStack>

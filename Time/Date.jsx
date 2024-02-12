@@ -2,6 +2,8 @@ import { Text, View } from "@gluestack-ui/themed";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { StyleSheet, TouchableOpacity } from "react-native";
+import { updateDoc, doc } from "firebase/firestore";
+import { db } from "../Config/Firebase";
 
 const Date = ({ date, onSelectDate, selected }) => {
   moment.locale("pt-br");
@@ -13,9 +15,27 @@ const Date = ({ date, onSelectDate, selected }) => {
 
   const isSelected = selected === fullDate || (isToday && !selected);
 
+  const handleDateSelection = async () => {
+    try {
+      const empresaDocRef = doc(db, "Estabelecimentos", "Empresa 1");
+      await updateDoc(empresaDocRef, {
+        HorarioReservado: {
+          Cliente: "testeNome",
+          Data: fullDate,
+          Hora: "",
+        },
+      });
+
+      onSelectDate(fullDate);
+      console.log("Dia selecionado:", fullDate);
+    } catch (error) {
+      console.error("Erro ao adicionar data ao Firestore:", error);
+    }
+  };
+
   return (
     <TouchableOpacity
-      onPress={() => onSelectDate(fullDate)}
+      onPress={handleDateSelection}
       style={[
         styles.card,
         isSelected && { backgroundColor: "#4D0288", color: "#fff" },

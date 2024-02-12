@@ -5,13 +5,24 @@ import Date from "../../Time/Date";
 
 import "moment/locale/pt-br";
 import DiagonalTimeline from "../Hours/Hours";
-import { Button, ButtonText, VStack } from "@gluestack-ui/themed";
+import { VStack } from "@gluestack-ui/themed";
+import { FirebaseProvider} from "../../context/FirebaseContext";
 
 const Calendar = ({ onSelectDate, selected }) => {
   const [dates, setDates] = useState([]);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [currentMonth, setCurrentMonth] = useState();
   const [selectedHour, setSelectedHour] = useState(null);
+  /*const {
+    horarioReservado,
+    servicoEscolhido,
+    agendamento,
+    lerAgendamento,
+    showActionsheet,
+    handleClose,
+    setDataSelecionada,
+  } = useFirebase();*/
+
   moment.locale("pt-br");
 
   const getDates = () => {
@@ -37,57 +48,66 @@ const Calendar = ({ onSelectDate, selected }) => {
   useEffect(() => {
     getCurrentMonth();
   }, [scrollPosition]);
+
   const handleHourSelection = (hour) => {
     setSelectedHour(hour);
 
     console.log("Hora selecionada:", hour);
   };
+
   return (
     <>
-      <View>
-        <Text
+      <FirebaseProvider>
+        <View>
+          <Text
+            style={{
+              textTransform: "capitalize",
+              fontSize: 22,
+              fontWeight: "bold",
+            }}
+          >
+            {currentMonth}
+          </Text>
+        </View>
+        <VStack
           style={{
-            textTransform: "capitalize",
-            fontSize: 22,
-            fontWeight: "bold",
+            width: "100%",
+            height: 240,
+            paddingBottom: 20,
           }}
         >
-          {currentMonth}
-        </Text>
-      </View>
-      <VStack
-        style={{
-          width: "100%",
-          height: 240,
-          paddingBottom: 20,
-        }}
-      >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onScroll={(e) => setScrollPosition(e.nativeEvent.contentOffset.x)}
-          style={{ height: 10, marginBottom: 5 }}
-        >
-          {dates.map((date, index) => (
-            <Date
-              key={index}
-              date={date}
-              onSelectDate={onSelectDate}
-              selected={selected}
-              isToday={index === 0}
-            />
-          ))}
-        </ScrollView>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ height: 10, marginBottom: 5 }}
-        >
-          <DiagonalTimeline onSelectHour={handleHourSelection} />
-        </ScrollView>
-        
-      </VStack>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            onScroll={(e) => setScrollPosition(e.nativeEvent.contentOffset.x)}
+            style={{ height: 10, marginBottom: 5 }}
+          >
+            {dates.map((date, index) => {
+              if (selected) {
+              //  setDataSelecionada(date)
+              }
+
+              return (
+                <Date
+                  key={index}
+                  date={date}
+                  onSelectDate={onSelectDate}
+                  selected={selected}
+                  isToday={index === 0}
+                />
+              );
+            })}
+          </ScrollView>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ height: 10, marginBottom: 5 }}
+          >
+            <DiagonalTimeline onSelectHour={handleHourSelection} />
+          </ScrollView>
+        </VStack>
+      </FirebaseProvider>
     </>
   );
 };

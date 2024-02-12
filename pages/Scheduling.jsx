@@ -1,8 +1,12 @@
-import { HStack, Heading, StatusBar, View } from "@gluestack-ui/themed";
+import { HStack, Heading, View } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import AppointmentCard from "../components/AppointmentCard/AppointmentCard";
+import { useFirebase } from "../context/FirebaseContext";
+import { StatusBar } from "react-native";
 
-export default function Scheduling() {
+export default function SchedulingComponent() {
+  const { horarioReservado } = useFirebase();
+
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
@@ -16,7 +20,8 @@ export default function Scheduling() {
           <Ionicons name="chevron-back" size={30} color="#FFFFFF" />
           <Heading color="#FFFFFF">Agendamentos</Heading>
         </HStack>
-        <AppointmentCard />
+
+        {Object.keys(horarioReservado).length > 0 && <AppointmentCard />}
       </View>
     </>
   );

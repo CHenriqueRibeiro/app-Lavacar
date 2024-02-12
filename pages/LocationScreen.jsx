@@ -6,7 +6,6 @@ import {
   Image,
   Input,
   InputField,
-  StatusBar,
   Text,
   VStack,
   View,
@@ -15,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useLocation } from "../context/LocationContext";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "react-native";
 
 export default function LocationScreen() {
   const { userLocation, loadingLocation, handleUseMyLocation } = useLocation();
@@ -23,9 +23,10 @@ export default function LocationScreen() {
   const handleContinue = () => {
     navigation.navigate("CustomTabs");
   };
+
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View
         style={{
           height: "100%",
@@ -60,9 +61,9 @@ export default function LocationScreen() {
             }}
           >
             <Heading color="#FFFFFF">Procure seu endereço</Heading>
-            <Input variant="outline" size="md" width={"85%"} >
+            <Input variant="outline" size="md" width={"85%"}>
               <InputField
-              color="#FFFFFF"
+                color="#FFFFFF"
                 placeholderTextColor={"#FFFFFF"}
                 placeholder="Digite seu bairro"
                 value={userLocation}

@@ -4,7 +4,6 @@ import {
   Heading,
   Image,
   ScrollView,
-  StatusBar,
   Text,
   VStack,
   View,
@@ -14,6 +13,7 @@ import { Fontisto } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import ServiceCard from "../components/ServiceCard/ServiceCard";
+import { StatusBar } from "react-native";
 export default function Establishment({ route }) {
   const { empresaData } = route.params;
   return (
@@ -69,7 +69,7 @@ export default function Establishment({ route }) {
           </HStack>
         </VStack>
         <ScrollView width={"95%"} backgroundColor="#E9EDF0" marginTop={15}>
-        <ServiceCard servicos={empresaData.Servicos} />
+          <ServiceCard servicos={empresaData.Servicos} />
         </ScrollView>
       </View>
     </>

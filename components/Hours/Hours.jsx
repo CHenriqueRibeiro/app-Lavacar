@@ -1,22 +1,31 @@
 import { Text, View } from "@gluestack-ui/themed";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
+import { useFirebase } from "../../context/FirebaseContext";
 
 const DiagonalTimeline = ({ onSelectHour }) => {
-  const [selectedHour, setSelectedHour] = useState(null);
+  const { horarioReservado, horariosDisponiveis, updateHorarioReservado } =
+    useFirebase();
+  const [selectedHour, setSelectedHour] = useState(horarioReservado.Hora || "");
+
+  const handleHourSelection = async (hour) => {
+    if (horarioReservado.Hora === hour.Hora) {
+      
+      console.log("Horário já reservado");
+    } else if (horariosDisponiveis.includes(hour.Hora)) {
+      await updateHorarioReservado({ ...horarioReservado, Hora: hour.Hora });
+
+      setSelectedHour(hour);
+      onSelectHour(hour);
+    } else {
+      console.log("Horário indisponível");
+    }
+  };
 
   const renderTimeline = () => {
-    const hours = [
-      "09:00",
-      "10:00",
-      "11:00",
-      "12:00",
-      "13:00",
-      "14:00",
-      "15:00",
-    ];
+    const hours = Array.from(horariosDisponiveis);
 
-    return hours.map((hour, index) => (
+    const components = hours.map((hour, index) => (
       <TouchableOpacity
         key={index}
         onPress={() => handleHourSelection(hour)}
@@ -41,13 +50,8 @@ const DiagonalTimeline = ({ onSelectHour }) => {
         </Text>
       </TouchableOpacity>
     ));
-  };
 
-  const handleHourSelection = (hour) => {
-    setSelectedHour((prevSelectedHour) =>
-      prevSelectedHour === hour ? null : hour
-    );
-    onSelectHour(hour);
+    return <>{components}</>;
   };
 
   return (
@@ -59,7 +63,7 @@ const DiagonalTimeline = ({ onSelectHour }) => {
         height: 45,
       }}
     >
-      {renderTimeline()}
+      {horariosDisponiveis.length > 0 && renderTimeline()}
     </View>
   );
 };

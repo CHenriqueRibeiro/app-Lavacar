@@ -46,8 +46,6 @@ export default function Scheduling() {
           <Heading color="#FFFFFF">Perfil</Heading>
         </HStack>
 
-        {/* Restante do código... */}
-
         <VStack
           width={"90%"}
           height={240}

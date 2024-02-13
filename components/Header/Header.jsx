@@ -9,8 +9,10 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
+import { useLocation } from "../../context/LocationContext";
 export default function Header() {
   const { user } = useAuth();
+  const { userLocation, city, handleUseMyLocation } = useLocation();
   return (
     <HStack
       bg="#4D0288"
@@ -26,7 +28,9 @@ export default function Header() {
         justifyContent="space-between"
       >
         <Avatar bgColor="$white" size="md" borderRadius="$lg">
-          <AvatarFallbackText color="#4D0288">{user.email}</AvatarFallbackText>
+          <AvatarFallbackText color="#4D0288">
+            {user === null ? "" : user.email}
+          </AvatarFallbackText>
         </Avatar>
         <VStack alignItems="center" gap={5}>
           <Text fontSize={14} color="#FFFFFF">
@@ -35,11 +39,16 @@ export default function Header() {
           <HStack gap={5}>
             <AntDesign name="down" size={20} color="#FFFFFF" />
             <Text fontSize={20} color="#FFFFFF">
-              Nova Metropole, Caucaia
+              {userLocation}, {city}
             </Text>
           </HStack>
         </VStack>
-        <Entypo name="location" size={24} color="#FFFFFF" />
+        <Entypo
+          name="location"
+          size={24}
+          color="#FFFFFF"
+          onPress={handleUseMyLocation}
+        />
       </HStack>
     </HStack>
   );

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState } from "react";
 import * as Location from "expo-location";
 
@@ -6,6 +5,8 @@ const LocationContext = createContext();
 
 export const LocationProvider = ({ children }) => {
   const [userLocation, setUserLocation] = useState(null);
+  const [city, setCity] = useState(null);
+  const [latAndLong, setLatAndLong] = useState(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -40,8 +41,13 @@ export const LocationProvider = ({ children }) => {
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      const formattedAddress = data.results[0].formatted;
-      setUserLocation(formattedAddress);
+      const neighborhood = data.results[0].components.suburb;
+      const city = data.results[0].components.city;
+      const latAndLon = data.results[0].geometry;
+      console.log(latAndLon);
+      setUserLocation(neighborhood);
+      setCity(city);
+      setLatAndLong(latAndLon);
       setLoadingLocation(false);
       setErrorMsg(null);
     } catch (error) {
@@ -59,6 +65,8 @@ export const LocationProvider = ({ children }) => {
         errorMsg,
         handleUseMyLocation,
         reverseGeocode,
+        city,
+        latAndLong,
       }}
     >
       {children}

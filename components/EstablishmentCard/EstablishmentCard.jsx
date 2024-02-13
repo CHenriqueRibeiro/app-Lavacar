@@ -23,7 +23,7 @@ const images = [
   "https://parquemall.com.br/wp-content/uploads/2019/10/lava-r%C3%A1pido-GreenLeaf-parque-mall-1030x687.jpg",
 ];
 
-const Card = ({ empresaData,onPress }) => {
+const Card = ({ empresaData, onPress }) => {
   const navigation = useNavigation();
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -39,12 +39,12 @@ const Card = ({ empresaData,onPress }) => {
     </View>
   );
 
- 
-    const handleContinue = () => {
-      onPress(empresaData);
-    };
- 
-
+  const handleContinue = () => {
+    handleCardPress(empresaData);
+  };
+  const handleCardPress = (empresaData) => {
+    navigation.navigate("Establishment", { empresaData });
+  };
   return (
     <VStack
       overflow="hidden"
@@ -57,7 +57,7 @@ const Card = ({ empresaData,onPress }) => {
         elevation: 6,
         shadowColor: "black",
       }}
-      onTouchEnd={onPress} 
+      onTouchEnd={onPress}
     >
       <Carousel
         data={images}
@@ -85,7 +85,8 @@ const Card = ({ empresaData,onPress }) => {
             <HStack>
               <Ionicons name="location-sharp" size={24} color="white" />
               <Text color="white">
-                {JSON.stringify(empresaData.Geolocalizacao)}
+                {empresaData.Geolocalizacao.latitude},
+                {empresaData.Geolocalizacao.longitude}
               </Text>
             </HStack>
             <HStack>
@@ -112,7 +113,6 @@ const Card = ({ empresaData,onPress }) => {
 const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [empresaDataList, setEmpresaDataList] = useState([]);
-  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -124,7 +124,6 @@ const HomeScreen = () => {
         empresasSnapshot.forEach((empresaDoc) => {
           const data = empresaDoc.data();
           empresasData.push(data);
-          
         });
 
         setEmpresaDataList(empresasData);
@@ -138,28 +137,16 @@ const HomeScreen = () => {
     fetchData();
   }, []);
 
-  const handleCardPress = (empresaData) => {
-   
-    navigation.navigate("Establishment", { empresaData });
-  };
-
   return (
     <ScrollView vertical pb={65}>
       <VStack alignItems="center" gap={12} mb={8} paddingTop={8}>
-         {empresaDataList.map((empresaData, index) => (
-         <Card
-            key={index}
-            index={index}
-            empresaData={empresaData}
-            onPress={() => handleCardPress(empresaData)}
-          />
+        {empresaDataList.map((empresaData, index) => (
+          <Card key={index} index={index} empresaData={empresaData} />
         ))}
       </VStack>
     </ScrollView>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   carouselItem: {

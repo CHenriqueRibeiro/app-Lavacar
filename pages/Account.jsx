@@ -8,34 +8,71 @@ import {
   ButtonText,
   Input,
   InputField,
+  Modal,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  Select,
+  SelectItem,
+  SelectTrigger,
+  SelectInput,
+  SelectContent,
+  SelectDragIndicatorWrapper,
+  SelectDragIndicator,
+  SelectPortal,
+  SelectBackdrop,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, StatusBar } from "react-native";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import PersonalInformation from "./PersonalInformation";
+
 export default function Scheduling() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, loading, signIn, signOut, getUserData } = useAuth();
+  const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [registrationMode, setRegistrationMode] = useState(false);
+  const [vehicleType, setVehicleType] = useState(null);
+  const [carModel, setCarModel] = useState("");
+  const [motoModel, setMotoModel] = useState("");
+
+  const { user, loading, signIn, signUp } = useAuth();
+  console.log("ta logado", user);
 
   const signInUser = async () => {
     signIn(email, password);
   };
 
-  const signOutUser = async () => {
-    signOut();
+  const toggleRegistrationMode = () => {
+    setRegistrationMode(!registrationMode);
   };
 
-  const showUserData = () => {
-    const userData = getUserData();
-    console.log("User Data:", userData);
-    alert(`Email do usuário: ${userData ? userData.email : "Não logado"}`);
+  const handleFinishRegistration = async () => {
+    try {
+      await signUp(email, password, phone, name);
+
+      setEmail("");
+      setPassword("");
+      setPhone("");
+    } catch (error) {
+      console.error("Erro ao finalizar o cadastro:", error.message);
+    }
   };
 
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
-      <View backgroundColor="#E9EDF0" flex={1} alignItems="center">
+      <View
+        backgroundColor="#E9EDF0"
+        flex={1}
+        alignItems="center"
+        width={"100%"}
+      >
         <HStack
           height={70}
           backgroundColor="#4D0288"
@@ -43,74 +80,309 @@ export default function Scheduling() {
           alignItems="center"
         >
           <Ionicons name="chevron-back" size={30} color="#FFFFFF" />
-          <Heading color="#FFFFFF">Perfil</Heading>
+          <Heading color="#FFFFFF">
+            {user === null ? "Acesse sua conta" : "Perfil"}
+          </Heading>
         </HStack>
 
         <VStack
-          width={"90%"}
+          width={"95%"}
           height={240}
           marginTop={15}
-          backgroundColor="blue"
           alignItems="center"
           gap={15}
         >
-          <Heading color="#FFFFFF">Login</Heading>
-          <Input
-            variant="outline"
-            size="md"
-            isDisabled={false}
-            isInvalid={false}
-            isReadOnly={false}
-            width={"95%"}
-          >
-            <InputField
-              onChangeText={(text) => setEmail(text)}
-              placeholder="Email"
-              autoCapitalize="none"
-              value={email}
-            />
-          </Input>
-          <Input
-            variant="outline"
-            size="md"
-            isDisabled={false}
-            isInvalid={false}
-            isReadOnly={false}
-            width={"95%"}
-          >
-            <InputField
-              secureTextEntry={true}
-              onChangeText={(text) => setPassword(text)}
-              placeholder="Senha"
-              autoCapitalize="none"
-              value={password}
-            />
-          </Input>
-          {loading ? (
-            <ActivityIndicator />
+          {user !== null ? (
+            <PersonalInformation />
           ) : (
             <>
-              <Button onPress={signInUser}>
-                <ButtonText>Login</ButtonText>
-              </Button>
-              <Button onPress={showUserData}>
-                <ButtonText>Mostrar Dados do Usuário</ButtonText>
-              </Button>
+              <Heading color="#4D0288">
+                {registrationMode ? "Preencha seus dados" : "Login"}
+              </Heading>
+              <Input
+                variant="outline"
+                size="md"
+                isDisabled={false}
+                isInvalid={false}
+                isReadOnly={false}
+                width={"95%"}
+                borderColor="#4D0288"
+              >
+                <InputField
+                  onChangeText={(text) => setEmail(text)}
+                  placeholder="Email"
+                  color="#4D0288"
+                  autoCapitalize="none"
+                  value={email}
+                />
+              </Input>
+              <Input
+                variant="outline"
+                size="md"
+                isDisabled={false}
+                isInvalid={false}
+                isReadOnly={false}
+                width={"95%"}
+                borderColor="#4D0288"
+              >
+                <InputField
+                  secureTextEntry={true}
+                  onChangeText={(text) => setPassword(text)}
+                  placeholder="Senha"
+                  color="#4D0288"
+                  autoCapitalize="none"
+                  value={password}
+                />
+              </Input>
+              {registrationMode && (
+                <>
+                  <Input
+                    variant="outline"
+                    size="md"
+                    isDisabled={false}
+                    isInvalid={false}
+                    isReadOnly={false}
+                    width={"95%"}
+                    borderColor="#4D0288"
+                  >
+                    <InputField
+                      onChangeText={(text) => setName(text)}
+                      placeholder="Nome"
+                      color="#4D0288"
+                      value={name}
+                    />
+                  </Input>
+                </>
+              )}
+              {registrationMode && (
+                <>
+                  <Input
+                    variant="outline"
+                    size="md"
+                    isDisabled={false}
+                    isInvalid={false}
+                    isReadOnly={false}
+                    width={"95%"}
+                    borderColor="#4D0288"
+                  >
+                    <InputField
+                      onChangeText={(text) => setPhone(text)}
+                      placeholder="Número de Telefone"
+                      color="#4D0288"
+                      keyboardType="numeric"
+                      value={phone}
+                    />
+                  </Input>
+                </>
+              )}
+              {registrationMode && (
+                <>
+                  <Select
+                    width={"95%"}
+                    onValueChange={(value) => setVehicleType(value)}
+                  >
+                    <SelectTrigger variant="outline" size="md">
+                      <SelectInput placeholder="Selecione seu(s) veiculos" />
+                    </SelectTrigger>
+                    <SelectPortal>
+                      <SelectBackdrop />
+                      <SelectContent>
+                        <SelectDragIndicatorWrapper>
+                          <SelectDragIndicator />
+                        </SelectDragIndicatorWrapper>
+                        <SelectItem label="Carro" value="carro" />
+                        <SelectItem label="Moto" value="moto" />
+                        <SelectItem label="Carro e moto" value="carro-moto" />
+                      </SelectContent>
+                    </SelectPortal>
+                  </Select>
+                </>
+              )}
+
+              {vehicleType === "carro" && (
+                <Input
+                  variant="outline"
+                  size="md"
+                  isDisabled={false}
+                  isInvalid={false}
+                  isReadOnly={false}
+                  width={"95%"}
+                  borderColor="#4D0288"
+                >
+                  <InputField
+                    onChangeText={(text) => setCarModel(text)}
+                    placeholder="Modelo do Carro"
+                    color="#4D0288"
+                    value={carModel}
+                  />
+                </Input>
+              )}
+
+              {vehicleType === "moto" && (
+                <Input
+                  variant="outline"
+                  size="md"
+                  isDisabled={false}
+                  isInvalid={false}
+                  isReadOnly={false}
+                  width={"95%"}
+                  borderColor="#4D0288"
+                >
+                  <InputField
+                    onChangeText={(text) => setMotoModel(text)}
+                    placeholder="Modelo da Moto"
+                    color="#4D0288"
+                    value={motoModel}
+                  />
+                </Input>
+              )}
+
+              {vehicleType === "carro-moto" && (
+                <>
+                  <Input
+                    variant="outline"
+                    size="md"
+                    isDisabled={false}
+                    isInvalid={false}
+                    isReadOnly={false}
+                    width={"95%"}
+                    borderColor="#4D0288"
+                  >
+                    <InputField
+                      onChangeText={(text) => setCarModel(text)}
+                      placeholder="Modelo do Carro"
+                      color="#4D0288"
+                      value={carModel}
+                    />
+                  </Input>
+
+                  <Input
+                    variant="outline"
+                    size="md"
+                    isDisabled={false}
+                    isInvalid={false}
+                    isReadOnly={false}
+                    width={"95%"}
+                    borderColor="#4D0288"
+                  >
+                    <InputField
+                      onChangeText={(text) => setMotoModel(text)}
+                      placeholder="Modelo da Moto"
+                      color="#4D0288"
+                      value={motoModel}
+                    />
+                  </Input>
+                </>
+              )}
+
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <>
+                  {!registrationMode && (
+                    <>
+                      <HStack width={"65%"} justifyContent="space-around">
+                        <Text>Esqueceu a senha?</Text>
+                        <ButtonText
+                          color="blue"
+                          onPress={() => setShowModal(true)}
+                        >
+                          Redefinir senha
+                        </ButtonText>
+                      </HStack>
+                      <Button
+                        onPress={signInUser}
+                        backgroundColor="#4D0288"
+                        borderRadius={8}
+                        width={"80%"}
+                        height={48}
+                      >
+                        <ButtonText>Entrar</ButtonText>
+                      </Button>
+                    </>
+                  )}
+
+                  {!registrationMode && (
+                    <Button
+                      onPress={toggleRegistrationMode}
+                      backgroundColor="#4D0288"
+                      borderRadius={8}
+                      width={"80%"}
+                      height={48}
+                    >
+                      <ButtonText>Criar conta</ButtonText>
+                    </Button>
+                  )}
+                  {registrationMode && (
+                    <Button
+                      onPress={handleFinishRegistration}
+                      backgroundColor="#4D0288"
+                      borderRadius={8}
+                      width={"80%"}
+                      height={48}
+                    >
+                      <ButtonText>Finalizar Cadastro</ButtonText>
+                    </Button>
+                  )}
+                </>
+              )}
             </>
           )}
         </VStack>
-
-        <Button
-          alignItems="center"
-          width={"50%"}
-          marginTop={15}
-          justifyContent="space-around"
-          onPress={signOutUser}
-        >
-          <ButtonText>Deslogar</ButtonText>
-          <Ionicons name="log-out-outline" size={24} color="black" />
-        </Button>
       </View>
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+        }}
+      >
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader borderBottomWidth="$0">
+            <VStack space="sm">
+              <Heading size="lg" color="#4D0288">
+                Esqueceu sua senha?
+              </Heading>
+              <Text size="sm">
+                Não tem problema, basta clicar no link que você vai receber por
+                email e criar sua nova senha.
+              </Text>
+            </VStack>
+          </ModalHeader>
+          <ModalBody>
+            <Input
+              variant="outline"
+              size="md"
+              isDisabled={false}
+              isInvalid={false}
+              isReadOnly={false}
+              width={"100%"}
+              borderColor="#4D0288"
+            >
+              <InputField placeholder="Digite seu email" color="#4D0288" />
+            </Input>
+          </ModalBody>
+          <ModalFooter borderTopWidth="$0">
+            <VStack space="lg" w="$full">
+              <Button>
+                <ButtonText>Enviar</ButtonText>
+              </Button>
+              <HStack>
+                <Button
+                  variant="link"
+                  size="sm"
+                  onPress={() => {
+                    setShowModal(false);
+                  }}
+                >
+                  <Ionicons name="chevron-back" size={20} color="#4D0288" />
+                  <ButtonText color="#4D0288">Voltar para login</ButtonText>
+                </Button>
+              </HStack>
+            </VStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

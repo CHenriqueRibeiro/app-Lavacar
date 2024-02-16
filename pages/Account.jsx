@@ -54,11 +54,13 @@ export default function Scheduling() {
 
   const handleFinishRegistration = async () => {
     try {
-      await signUp(email, password, phone, name);
+      await signUp(email, password, phone, name, carModel, motoModel);
 
       setEmail("");
       setPassword("");
       setPhone("");
+      setCarModel("");
+      setMotoModel("");
     } catch (error) {
       console.error("Erro ao finalizar o cadastro:", error.message);
     }

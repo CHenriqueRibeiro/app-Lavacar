@@ -44,8 +44,10 @@ export const LocationProvider = ({ children }) => {
       const neighborhood = data.results[0].components.suburb;
       const city = data.results[0].components.city;
       const latAndLon = data.results[0].geometry;
-      console.log(latAndLon);
-      setUserLocation(neighborhood);
+
+      const locationString = `${neighborhood}, ${city}`;
+
+      setUserLocation(locationString);
       setCity(city);
       setLatAndLong(latAndLon);
       setLoadingLocation(false);
@@ -67,6 +69,7 @@ export const LocationProvider = ({ children }) => {
         reverseGeocode,
         city,
         latAndLong,
+        setUserLocation,
       }}
     >
       {children}

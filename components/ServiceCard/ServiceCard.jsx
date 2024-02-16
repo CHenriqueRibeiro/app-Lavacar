@@ -1,37 +1,33 @@
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
   Box,
   Button,
   ButtonText,
   HStack,
   Heading,
   ScrollView,
-  Text,
   VStack,
   View,
 } from "@gluestack-ui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Calendar from "../Calendar/Calendar";
 import { formatCurrency } from "../../Services/FormatCurrency";
 import { useFirebase } from "../../context/FirebaseContext";
-
+import ActionSheet from "react-native-actions-sheet";
 export default function ServiceCard({ servicos }) {
-  const {
-    horarioReservado,
-    servicoEscolhido,
-    agendamento,
-    lerAgendamento,
-    showActionsheet,
-    handleClose,
-  } = useFirebase();
+  const actionSheetRef = useRef(null);
+  const { horarioReservado, servicoEscolhido, agendamento, lerAgendamento } =
+    useFirebase();
 
   const [selectedDate, setSelectedDate] = useState(null);
+  const handleAgendamento = () => {
+    actionSheetRef.current?.show();
+    lerAgendamento();
+  };
 
+  const fecharActionSheet = () => {
+    actionSheetRef.current?.hide();
+  };
   return (
     <ScrollView vertical width={"100%"}>
       {Object.entries(servicos).map(([nomeServico, valorServico]) => (
@@ -71,27 +67,27 @@ export default function ServiceCard({ servicos }) {
             >
               <Heading>{nomeServico}</Heading>
               <Heading>{formatCurrency(valorServico)}</Heading>
-              <Button gap={5} onPress={lerAgendamento}>
+              <Button gap={5} onPress={handleAgendamento}>
                 <ButtonText>Agendar Serviço</ButtonText>
                 <MaterialIcons name="schedule-send" size={24} color="white" />
               </Button>
             </VStack>
           </HStack>
-          <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
-            <ActionsheetBackdrop />
-            <ActionsheetContent>
-              <ActionsheetDragIndicatorWrapper>
-                <ActionsheetDragIndicator />
-              </ActionsheetDragIndicatorWrapper>
+          <ActionSheet ref={actionSheetRef}>
+            <View alignItems="center">
               <Calendar
                 onSelectDate={setSelectedDate}
                 selected={selectedDate}
               />
-              <Button onPress={handleClose} marginBottom={15} width={"75%"}>
+              <Button
+                onPress={fecharActionSheet}
+                marginBottom={15}
+                width={"75%"}
+              >
                 <ButtonText>Marcar Horario</ButtonText>
               </Button>
-            </ActionsheetContent>
-          </Actionsheet>
+            </View>
+          </ActionSheet>
         </View>
       ))}
     </ScrollView>

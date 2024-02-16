@@ -39,7 +39,7 @@ export default function Header() {
           <HStack gap={5}>
             <AntDesign name="down" size={20} color="#FFFFFF" />
             <Text fontSize={20} color="#FFFFFF">
-              {userLocation}, {city}
+              {userLocation}
             </Text>
           </HStack>
         </VStack>

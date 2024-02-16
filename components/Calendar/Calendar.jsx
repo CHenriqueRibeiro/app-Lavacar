@@ -6,7 +6,7 @@ import Date from "../../Time/Date";
 import "moment/locale/pt-br";
 import DiagonalTimeline from "../Hours/Hours";
 import { VStack } from "@gluestack-ui/themed";
-import { FirebaseProvider} from "../../context/FirebaseContext";
+import { FirebaseProvider } from "../../context/FirebaseContext";
 
 const Calendar = ({ onSelectDate, selected }) => {
   const [dates, setDates] = useState([]);
@@ -61,9 +61,12 @@ const Calendar = ({ onSelectDate, selected }) => {
         <View>
           <Text
             style={{
+              textAlign: "center",
               textTransform: "capitalize",
               fontSize: 22,
               fontWeight: "bold",
+              marginTop: 15,
+              marginBottom: 15,
             }}
           >
             {currentMonth}
@@ -72,7 +75,7 @@ const Calendar = ({ onSelectDate, selected }) => {
         <VStack
           style={{
             width: "100%",
-            height: 240,
+            height: 350,
             paddingBottom: 20,
           }}
         >
@@ -81,11 +84,16 @@ const Calendar = ({ onSelectDate, selected }) => {
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
             onScroll={(e) => setScrollPosition(e.nativeEvent.contentOffset.x)}
-            style={{ height: 10, marginBottom: 5 }}
+            style={{
+              height: 10,
+              marginBottom: 5,
+              marginLeft: 10,
+              marginRight: 10,
+            }}
           >
             {dates.map((date, index) => {
               if (selected) {
-              //  setDataSelecionada(date)
+                //  setDataSelecionada(date)
               }
 
               return (

@@ -16,7 +16,8 @@ import { useAuth } from "../context/AuthContext";
 import { Fontisto } from "@expo/vector-icons";
 
 const PersonalInformation = () => {
-  const { user, readUserDataFromFirestore, updateUserDataInFirestore } = useAuth();
+  const { user, readUserDataFromFirestore, updateUserDataInFirestore } =
+    useAuth();
   const [userData, setUserData] = useState(null);
   const [carModel, setCarModel] = useState("");
   const [motoModel, setMotoModel] = useState("");
@@ -91,7 +92,7 @@ const PersonalInformation = () => {
           >
             <Ionicons name="person-circle-outline" size={60} color="#FFFFFF" />
           </Box>
-          <VStack height={104} justifyContent="space-between">
+          <VStack height={104} justifyContent="space-around">
             <Heading color="#000000">Dados Pessoais</Heading>
             {userData && (
               <>
@@ -128,18 +129,35 @@ const PersonalInformation = () => {
           >
             <Fontisto name="car" size={60} color="white" />
           </Box>
-          <VStack height={104} justifyContent="space-between">
+          <VStack height={104} justifyContent="space-around">
             <Heading color="#000000">Veículo</Heading>
-            <Text fontWeight="700" color="#000000">
-              Modelo do Carro:
-              <Text>{carModel}</Text>
-            </Text>
-            <Text fontWeight="700" color="#000000">
-              Modelo da Moto:
-              <Text>{motoModel}</Text>
-            </Text>
+            {userData && (
+              <>
+                {userData.carModel === "" || null ? (
+                  <Box display="none"></Box>
+                ) : (
+                  <Text fontWeight="700" color="#000000">
+                    Modelo do Carro:
+                    <Text>{userData.carModel}</Text>
+                  </Text>
+                )}
+                {userData.motoModel === "" || null ? (
+                  <Box display="none"></Box>
+                ) : (
+                  <Text fontWeight="700" color="#000000">
+                    Modelo da Moto:
+                    <Text>{userData.motoModel}</Text>
+                  </Text>
+                )}
+              </>
+            )}
           </VStack>
-          <FontAwesome6 name="edit" size={30} color="black" onPress={updateUserData} />
+          <FontAwesome6
+            name="edit"
+            size={30}
+            color="black"
+            onPress={updateUserData}
+          />
         </HStack>
 
         <Button

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
+  ButtonSpinner,
   ButtonText,
   Heading,
   Image,
@@ -14,14 +15,49 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useLocation } from "../context/LocationContext";
 import { useNavigation } from "@react-navigation/native";
-import { StatusBar } from "react-native";
+import { StatusBar, TouchableOpacity } from "react-native";
 
 export default function LocationScreen() {
-  const { userLocation, loadingLocation, handleUseMyLocation } = useLocation();
+  const {
+    userLocation,
+    setUserLocation,
+    loadingLocation,
+    handleUseMyLocation,
+  } = useLocation();
+  const [suggestions, setSuggestions] = useState([]);
+
   const navigation = useNavigation();
 
   const handleContinue = () => {
     navigation.navigate("CustomTabs");
+  };
+  const getAutocompleteSuggestions = async (query) => {
+    try {
+      const apiKey = "fbb87def325a48768cbc78cc3708bc9f";
+      const apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${query}&countrycode=BR&key=${apiKey}&pretty=1`;
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      const suggestions = data.results
+        .filter((result) => result.components.suburb && result.components.city)
+        .map((result) => ({
+          suburb: result.components.suburb,
+          city: result.components.city,
+        }));
+
+      const uniqueSuggestions = suggestions.filter(
+        (suggestion, index, self) =>
+          index ===
+          self.findIndex(
+            (s) => s.suburb === suggestion.suburb && s.city === suggestion.city
+          )
+      );
+
+      setSuggestions(uniqueSuggestions);
+    } catch (error) {
+      console.error("Erro ao obter sugestões:", error);
+    }
   };
 
   return (
@@ -61,15 +97,64 @@ export default function LocationScreen() {
             }}
           >
             <Heading color="#FFFFFF">Procure seu endereço</Heading>
-            <Input variant="outline" size="md" width={"85%"}>
-              <InputField
-                color="#FFFFFF"
-                placeholderTextColor={"#FFFFFF"}
-                placeholder="Digite seu bairro"
-                value={userLocation}
-                onChangeText={(text) => setUserLocation(text)}
-              />
-            </Input>
+            <View style={{ position: "relative", width: "85%" }}>
+              {suggestions.length > 0 && (
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 50, 
+                    width: "100%",
+                    zIndex: 1,
+                    borderColor: "#FFFFFF",
+                    borderWidth: 1,
+                    backgroundColor: "#4D0288",
+                  }}
+                >
+                  {suggestions.map((suggestion, index) => (
+                    <TouchableOpacity
+                    
+                      key={index}
+                      onPress={() => {
+                        const suburb = suggestion.suburb || "";
+                        const city = suggestion.city || "";
+
+                        setUserLocation(`${suburb}, ${city}`);
+                        setSuggestions([]);
+                      }}
+                    >
+                      <Text
+                        textAlignVertical="center"
+                        color="#FFFFFF"
+                        borderColor="#FFFFFF"
+                        borderTopWidth={1}
+                        height={40}
+                      >{`${suggestion.suburb || ""}, ${
+                        suggestion.city || ""
+                      }`}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+              <Input
+                variant="outline"
+                size="md"
+                width={"100%"}
+                style={{ zIndex: 2 }}
+              >
+                <InputField
+                  autoCorrect={false}
+                  color="#FFFFFF"
+                  placeholderTextColor={"#FFFFFF"}
+                  placeholder="Digite seu bairro"
+                  value={userLocation}
+                  onChangeText={(text) => {
+                    setUserLocation(text);
+                    getAutocompleteSuggestions(text);
+                  }}
+                />
+              </Input>
+            </View>
+
             <Text color="#FFFFFF">OU</Text>
             <Button
               bg="#FFFFFF"
@@ -81,7 +166,6 @@ export default function LocationScreen() {
               onPress={handleUseMyLocation}
               disabled={loadingLocation}
             >
-              <Ionicons name="locate-sharp" size={24} color="#4D0288" />
               <ButtonText color="#4D0288">
                 {loadingLocation
                   ? "Obtendo Localização..."
@@ -95,14 +179,15 @@ export default function LocationScreen() {
             style={{
               width: "85%",
               height: 60,
-              justifyContent: "space-around",
+              justifyContent: "center",
             }}
             onPress={handleContinue}
+            gap={5}
           >
             <ButtonText fontSize={"$xl"} color="#4D0288">
               Continuar
             </ButtonText>
-            <MaterialIcons name="navigate-next" size={24} color="#4D0288" />
+            <MaterialIcons name="navigate-next" size={30} color="#4D0288" />
           </Button>
         </VStack>
       </View>

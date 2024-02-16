@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     return user;
   };
 
-  const signUp = async (email, password, phone, name) => {
+  const signUp = async (email, password, phone, name, carModel,motoModel) => {
     try {
       const response = await createUserWithEmailAndPassword(
         firebaseAuth,
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
         password
       );
 
-      await createUserInFirestore(response.user, phone, name);
+      await createUserInFirestore(response.user, phone, name, carModel,motoModel);
 
       console.log(response);
       alert("Cadastro realizado com sucesso!");
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }) => {
       alert("Não foi possível realizar o cadastro: " + error.message);
     }
   };
-  const createUserInFirestore = async (user, phone, name) => {
+  const createUserInFirestore = async (user, phone, name, carModel,motoModel) => {
     const firestore = getFirestore();
 
     const userDocRef = doc(firestore, "Usuarios", user.uid);
@@ -83,6 +83,8 @@ export const AuthProvider = ({ children }) => {
         email: user.email,
         phoneNumber: phone,
         name: name,
+        carModel: carModel,
+        motoModel: motoModel
       });
 
       console.log("Usuário adicionado à coleção 'Usuarios' no Firestore.");

@@ -14,9 +14,12 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, useWindowDimensions } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
+
 import { db } from "../../Config/Firebase";
+import ContentLoader, { Rect } from "react-content-loader/native";
+
 const images = [
   "https://img.freepik.com/fotos-gratis/lavadora-profissional-em-uniforme-azul-lavando-carro-de-luxo-com-pistola-de-agua-em-um-lava-jato-a-ceu-aberto_496169-333.jpg?size=626&ext=jpg&ga=GA1.1.632798143.1705276800&semt=sph",
   "https://www.acquazero.com/wp-content/uploads/2021/03/lava-jato-santana.jpeg",
@@ -109,7 +112,6 @@ const Card = ({ empresaData, onPress }) => {
     </VStack>
   );
 };
-
 const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [empresaDataList, setEmpresaDataList] = useState([]);
@@ -139,12 +141,43 @@ const HomeScreen = () => {
 
   return (
     <ScrollView vertical pb={65}>
-      <VStack alignItems="center" gap={12} mb={8} paddingTop={8}>
-        {empresaDataList.map((empresaData, index) => (
-          <Card key={index} index={index} empresaData={empresaData} />
-        ))}
-      </VStack>
+      {loading ? (
+        <VStack alignItems="center" gap={12} mb={8} paddingTop={8}>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <CardSkeleton key={index} />
+          ))}
+        </VStack>
+      ) : (
+        <VStack alignItems="center" gap={12} mb={8} paddingTop={8}>
+          {empresaDataList.map((empresaData, index) => (
+            <Card key={index} index={index} empresaData={empresaData} />
+          ))}
+        </VStack>
+      )}
     </ScrollView>
+  );
+};
+
+const CardSkeleton = () => {
+  const { width } = useWindowDimensions();
+
+  return (
+    <VStack
+      overflow="hidden"
+      width="95%"
+      backgroundColor="transparent"
+      height={300}
+      borderRadius={10}
+      style={{
+        shadowRadius: 30,
+        elevation: 6,
+        shadowColor: "black",
+      }}
+    >
+      <ContentLoader viewBox={`0 0 ${width * 0.95} 300`}>
+        <Rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
+      </ContentLoader>
+    </VStack>
   );
 };
 
@@ -181,5 +214,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#C0C0C0",
   },
 });
-
 export default HomeScreen;

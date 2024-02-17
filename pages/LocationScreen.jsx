@@ -11,8 +11,6 @@ import {
   VStack,
   View,
 } from "@gluestack-ui/themed";
-import { Ionicons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useLocation } from "../context/LocationContext";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar, TouchableOpacity } from "react-native";
@@ -102,7 +100,7 @@ export default function LocationScreen() {
                 <View
                   style={{
                     position: "absolute",
-                    bottom: 50, 
+                    bottom: 50,
                     width: "100%",
                     zIndex: 1,
                     borderColor: "#FFFFFF",
@@ -112,7 +110,6 @@ export default function LocationScreen() {
                 >
                   {suggestions.map((suggestion, index) => (
                     <TouchableOpacity
-                    
                       key={index}
                       onPress={() => {
                         const suburb = suggestion.suburb || "";
@@ -187,7 +184,6 @@ export default function LocationScreen() {
             <ButtonText fontSize={"$xl"} color="#4D0288">
               Continuar
             </ButtonText>
-            <MaterialIcons name="navigate-next" size={30} color="#4D0288" />
           </Button>
         </VStack>
       </View>

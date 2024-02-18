@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   ButtonSpinner,
@@ -23,7 +23,7 @@ export default function LocationScreen() {
     handleUseMyLocation,
   } = useLocation();
   const [suggestions, setSuggestions] = useState([]);
-
+  const [isContinueButtonDisabled, setContinueButtonDisabled] = useState(true);
   const navigation = useNavigation();
 
   const handleContinue = () => {
@@ -57,6 +57,14 @@ export default function LocationScreen() {
       console.error("Erro ao obter sugestões:", error);
     }
   };
+  const handleInputChange = (text) => {
+    setUserLocation(text);
+    getAutocompleteSuggestions(text);
+  };
+  useEffect(() => {
+    const trimmedUserLocation = userLocation ? userLocation.trim() : "";
+    setContinueButtonDisabled(!trimmedUserLocation && suggestions.length === 0);
+  }, [userLocation, suggestions]);
 
   return (
     <>
@@ -144,10 +152,7 @@ export default function LocationScreen() {
                   placeholderTextColor={"#FFFFFF"}
                   placeholder="Digite seu bairro"
                   value={userLocation}
-                  onChangeText={(text) => {
-                    setUserLocation(text);
-                    getAutocompleteSuggestions(text);
-                  }}
+                  onChangeText={handleInputChange}
                 />
               </Input>
             </View>
@@ -171,7 +176,7 @@ export default function LocationScreen() {
             </Button>
           </VStack>
           <Button
-            bg="#FFFFFF"
+            bg={isContinueButtonDisabled ? "#919396" : "#FFFFFF"}
             borderRadius={"$2xl"}
             style={{
               width: "85%",
@@ -180,6 +185,7 @@ export default function LocationScreen() {
             }}
             onPress={handleContinue}
             gap={5}
+            disabled={isContinueButtonDisabled}
           >
             <ButtonText fontSize={"$xl"} color="#4D0288">
               Continuar

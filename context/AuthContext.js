@@ -8,6 +8,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = createContext();
 
@@ -19,7 +20,6 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (authUser) => {
       setUser(authUser);
       setLoading(false);
-      console.log("esse e o usuario");
     });
 
     return () => unsubscribe();
@@ -33,10 +33,8 @@ export const AuthProvider = ({ children }) => {
         password
       );
 
-      console.log(response);
       alert("Login realizado com sucesso!");
     } catch (error) {
-      console.log(error);
       alert("Não foi possível fazer o login: " + error.message);
     }
   };
@@ -44,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const signOutUser = async () => {
     try {
       await signOut(firebaseAuth);
+      clearUserDataFromAsyncStorage(); // Adicionando a remoção dos dados do AsyncStorage
       console.log("Usuário deslogado do Firebase com sucesso!");
       alert("Conta deslogada com sucesso!");
     } catch (error) {
@@ -51,12 +50,23 @@ export const AuthProvider = ({ children }) => {
       alert("Não foi possível deslogar da conta: " + error.message);
     }
   };
-
+  const clearUserDataFromAsyncStorage = async () => {
+    try {
+      await AsyncStorage.removeItem("userData");
+      console.log("Dados do usuário removidos do AsyncStorage.");
+    } catch (error) {
+      console.error(
+        "Erro ao remover dados do usuário do AsyncStorage:",
+        error.message
+      );
+      throw error;
+    }
+  };
   const getUserData = () => {
     return user;
   };
 
-  const signUp = async (email, password, phone, name, carModel,motoModel) => {
+  const signUp = async (email, password, phone, name, carModel, motoModel) => {
     try {
       const response = await createUserWithEmailAndPassword(
         firebaseAuth,
@@ -64,7 +74,21 @@ export const AuthProvider = ({ children }) => {
         password
       );
 
-      await createUserInFirestore(response.user, phone, name, carModel,motoModel);
+      await createUserInFirestore(
+        response.user,
+        phone,
+        name,
+        carModel,
+        motoModel
+      );
+      await saveUserDataToAsyncStorage(
+        response.user.uid,
+        email,
+        phone,
+        name,
+        carModel,
+        motoModel
+      );
 
       console.log(response);
       alert("Cadastro realizado com sucesso!");
@@ -73,9 +97,15 @@ export const AuthProvider = ({ children }) => {
       alert("Não foi possível realizar o cadastro: " + error.message);
     }
   };
-  const createUserInFirestore = async (user, phone, name, carModel,motoModel) => {
-    const firestore = getFirestore();
 
+  const createUserInFirestore = async (
+    user,
+    phone,
+    name,
+    carModel,
+    motoModel
+  ) => {
+    const firestore = getFirestore();
     const userDocRef = doc(firestore, "Usuarios", user.uid);
 
     try {
@@ -84,18 +114,44 @@ export const AuthProvider = ({ children }) => {
         phoneNumber: phone,
         name: name,
         carModel: carModel,
-        motoModel: motoModel
+        motoModel: motoModel,
       });
-
-      console.log("Usuário adicionado à coleção 'Usuarios' no Firestore.");
     } catch (error) {
-      console.error("Erro ao adicionar usuário à coleção:", error.message);
       throw error;
     }
   };
+
+  const saveUserDataToAsyncStorage = async (
+    userId,
+    email,
+    phone,
+    name,
+    carModel,
+    motoModel
+  ) => {
+    try {
+      const userData = {
+        userId: userId,
+        email: email,
+        phone: phone,
+        name: name,
+        carModel: carModel,
+        motoModel: motoModel,
+      };
+
+      await AsyncStorage.setItem("userData", JSON.stringify(userData));
+      console.log("Dados do usuário salvos no AsyncStorage.");
+    } catch (error) {
+      console.error(
+        "Erro ao salvar dados do usuário no AsyncStorage:",
+        error.message
+      );
+      throw error;
+    }
+  };
+
   const readUserDataFromFirestore = async (userId) => {
     const firestore = getFirestore();
-
     const userDocRef = doc(firestore, "Usuarios", userId);
 
     try {
@@ -103,10 +159,9 @@ export const AuthProvider = ({ children }) => {
 
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
-        console.log("Dados do usuário:", userData);
+
         return userData;
       } else {
-        console.log("Usuário não encontrado no Firestore.");
         return null;
       }
     } catch (error) {
@@ -114,6 +169,7 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
+
   const updatePhoneNumberAndMore = async (user, phone, name) => {
     try {
       await Promise.all([
@@ -122,13 +178,7 @@ export const AuthProvider = ({ children }) => {
           name: name,
         }),
       ]);
-
-      console.log("Número de telefone atualizado com sucesso!");
     } catch (error) {
-      console.log(
-        "Não foi possível atualizar o número de telefone:",
-        error.message
-      );
       throw error;
     }
   };

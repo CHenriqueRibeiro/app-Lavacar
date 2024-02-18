@@ -26,8 +26,6 @@ export default function AppointmentCard() {
 
         if (docSnap.exists()) {
           setHorarioReservado(horarioReservadoData);
-        } else {
-          console.log("Nao tem documento!");
         }
       } catch (error) {
         console.error("Error getting document:", error);

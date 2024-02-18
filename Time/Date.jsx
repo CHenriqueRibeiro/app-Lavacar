@@ -27,7 +27,6 @@ const Date = ({ date, onSelectDate, selected }) => {
       });
 
       onSelectDate(fullDate);
-      console.log("Dia selecionado:", fullDate);
     } catch (error) {
       console.error("Erro ao adicionar data ao Firestore:", error);
     }

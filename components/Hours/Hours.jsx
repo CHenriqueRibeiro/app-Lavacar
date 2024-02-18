@@ -10,15 +10,11 @@ const DiagonalTimeline = ({ onSelectHour }) => {
 
   const handleHourSelection = async (hour) => {
     if (horarioReservado.Hora === hour.Hora) {
-      
-      console.log("Horário já reservado");
     } else if (horariosDisponiveis.includes(hour.Hora)) {
       await updateHorarioReservado({ ...horarioReservado, Hora: hour.Hora });
 
       setSelectedHour(hour);
       onSelectHour(hour);
-    } else {
-      console.log("Horário indisponível");
     }
   };
 

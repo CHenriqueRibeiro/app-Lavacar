@@ -163,18 +163,14 @@ const CardSkeleton = () => {
 
   return (
     <VStack
+      speed={1}
       overflow="hidden"
       width="95%"
       backgroundColor="transparent"
       height={300}
       borderRadius={10}
-      style={{
-        shadowRadius: 30,
-        elevation: 6,
-        shadowColor: "black",
-      }}
     >
-      <ContentLoader viewBox={`0 0 ${width * 0.95} 300`}>
+      <ContentLoader viewBox={`0 0 ${width} 300`}>
         <Rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
       </ContentLoader>
     </VStack>

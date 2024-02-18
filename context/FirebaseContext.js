@@ -44,8 +44,6 @@ export const FirebaseProvider = ({ children }) => {
       if (docSnap.exists()) {
         setHorarioReservado(docSnap.data().HorarioReservado || {});
         setHorariosDisponiveis(docSnap.data().Horarios || []);
-      } else {
-        console.log("Nao tem documento!");
       }
     } catch (error) {
       console.error("Error getting document:", error);
@@ -87,7 +85,6 @@ export const FirebaseProvider = ({ children }) => {
           "dataAgendamento",
           JSON.stringify(horarioReservado)
         );
-        console.log("Data agendada com sucesso!");
       } else {
         console.warn("Não há horário reservado para agendar.");
       }
@@ -97,8 +94,6 @@ export const FirebaseProvider = ({ children }) => {
   };
   const lerAgendamento = async () => {
     fetchData();
-
-    console.log(dataSelecionada);
 
     handleClose();
     //   const dataAgendamento = await AsyncStorage.getItem("dataAgendamento");

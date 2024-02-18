@@ -51,8 +51,6 @@ const Calendar = ({ onSelectDate, selected }) => {
 
   const handleHourSelection = (hour) => {
     setSelectedHour(hour);
-
-    console.log("Hora selecionada:", hour);
   };
 
   return (

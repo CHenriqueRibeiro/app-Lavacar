@@ -16,8 +16,12 @@ import { useAuth } from "../context/AuthContext";
 import { Fontisto } from "@expo/vector-icons";
 
 const PersonalInformation = () => {
-  const { user, readUserDataFromFirestore, updateUserDataInFirestore } =
-    useAuth();
+  const {
+    user,
+    readUserDataFromFirestore,
+    updateUserDataInFirestore,
+    signOut,
+  } = useAuth();
   const [userData, setUserData] = useState(null);
   const [carModel, setCarModel] = useState("");
   const [motoModel, setMotoModel] = useState("");
@@ -35,8 +39,6 @@ const PersonalInformation = () => {
           if (data && data.veiculos && data.veiculos.moto) {
             setMotoModel(data.veiculos.moto.modelo);
           }
-        } else {
-          console.log("Usuário não autenticado.");
         }
       } catch (error) {
         console.error("Erro ao buscar dados do usuário:", error.message);
@@ -62,13 +64,19 @@ const PersonalInformation = () => {
           },
         };
         await updateUserDataInFirestore(user.uid, userDataToUpdate);
-        console.log("Dados do usuário atualizados com sucesso!");
       }
     } catch (error) {
       console.error("Erro ao atualizar dados do usuário:", error.message);
     }
   };
-
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      // Aqui você pode redirecionar o usuário para a tela de login ou fazer qualquer outra ação necessária após o logout
+    } catch (error) {
+      console.error("Erro ao realizar logout:", error.message);
+    }
+  };
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
@@ -167,8 +175,9 @@ const PersonalInformation = () => {
           justifyContent="space-around"
           backgroundColor="#4D0288"
           borderRadius={8}
+          onPress={handleLogout} // Chama a função handleLogout no press do botão
         >
-          <ButtonText> Encerrar Seção</ButtonText>
+          <ButtonText>Encerrar Seção</ButtonText>
           <Ionicons name="exit-outline" size={24} color="white" />
         </Button>
       </View>

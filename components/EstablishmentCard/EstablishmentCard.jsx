@@ -16,26 +16,64 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Dimensions, StyleSheet, useWindowDimensions } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
-
 import { db } from "../../Config/Firebase";
 import ContentLoader, { Rect } from "react-content-loader/native";
-
-const images = [
-  "https://img.freepik.com/fotos-gratis/lavadora-profissional-em-uniforme-azul-lavando-carro-de-luxo-com-pistola-de-agua-em-um-lava-jato-a-ceu-aberto_496169-333.jpg?size=626&ext=jpg&ga=GA1.1.632798143.1705276800&semt=sph",
-  "https://www.acquazero.com/wp-content/uploads/2021/03/lava-jato-santana.jpeg",
-  "https://parquemall.com.br/wp-content/uploads/2019/10/lava-r%C3%A1pido-GreenLeaf-parque-mall-1030x687.jpg",
-];
+import { useLocation } from "../../context/LocationContext";
 
 const Card = ({ empresaData, onPress }) => {
   const navigation = useNavigation();
-  const [activeSlide, setActiveSlide] = useState(0);
+  const { userLocation, reverseGeocode, city, latAndLong } = useLocation();
 
-  const renderItem = () => (
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [distance, setDistance] = useState(null);
+
+  useEffect(() => {
+    if (latAndLong) {
+      const empresaLatitude = empresaData.Geolocalizacao.latitude;
+      const empresaLongitude = empresaData.Geolocalizacao.longitude;
+
+      const empresaCoords = {
+        latitude: empresaLatitude,
+        longitude: empresaLongitude,
+      };
+
+      const userCoords = {
+        latitude: latAndLong.lat,
+        longitude: latAndLong.lng,
+      };
+
+      const calculatedDistance = calculateDistance(userCoords, empresaCoords);
+
+      setDistance(calculatedDistance);
+    }
+  }, [latAndLong, empresaData]);
+
+  const calculateDistance = (coord1, coord2) => {
+    const R = 6371;
+    const dLat = deg2rad(coord2.latitude - coord1.latitude);
+    const dLon = deg2rad(coord2.longitude - coord1.longitude);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(coord1.latitude)) *
+        Math.cos(deg2rad(coord2.latitude)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+
+    return distance;
+  };
+
+  const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+  };
+
+  const renderItem = ({ item }) => (
     <View style={styles.carouselItem}>
       <Image
-        source={{
-          uri: "https://thumbs.dreamstime.com/b/imagem-de-fundo-bonita-do-c%C3%A9u-da-natureza-64743176.jpg",
-        }}
+        source={{ uri: item }}
         style={styles.image}
         alt="Imagens dos estabelecimentos"
       />
@@ -45,9 +83,11 @@ const Card = ({ empresaData, onPress }) => {
   const handleContinue = () => {
     handleCardPress(empresaData);
   };
+
   const handleCardPress = (empresaData) => {
     navigation.navigate("Establishment", { empresaData });
   };
+
   return (
     <VStack
       overflow="hidden"
@@ -63,7 +103,7 @@ const Card = ({ empresaData, onPress }) => {
       onTouchEnd={onPress}
     >
       <Carousel
-        data={images}
+        data={empresaData.Fotos}
         renderItem={renderItem}
         sliderWidth={Dimensions.get("window").width}
         itemWidth={Dimensions.get("window").width}
@@ -71,7 +111,7 @@ const Card = ({ empresaData, onPress }) => {
         onSnapToItem={(index) => setActiveSlide(index)}
       />
       <Pagination
-        dotsLength={images.length}
+        dotsLength={empresaData.Fotos ? empresaData.Fotos.length : 0}
         activeDotIndex={activeSlide}
         containerStyle={styles.paginationContainer}
         dotStyle={styles.paginationDot}
@@ -87,10 +127,13 @@ const Card = ({ empresaData, onPress }) => {
           <HStack flexDirection="column">
             <HStack>
               <Ionicons name="location-sharp" size={24} color="white" />
-              <Text color="white">
-                {empresaData.Geolocalizacao.latitude},
-                {empresaData.Geolocalizacao.longitude}
-              </Text>
+              {distance !== null && (
+                <Text color="white">
+                  {distance < 1
+                    ? `${Math.round(distance * 1000)} metros`
+                    : `${distance.toFixed(2)} km`}
+                </Text>
+              )}
             </HStack>
             <HStack>
               <MaterialIcons name="attach-money" size={24} color="white" />
@@ -112,6 +155,7 @@ const Card = ({ empresaData, onPress }) => {
     </VStack>
   );
 };
+
 const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [empresaDataList, setEmpresaDataList] = useState([]);
@@ -125,7 +169,10 @@ const HomeScreen = () => {
         const empresasData = [];
         empresasSnapshot.forEach((empresaDoc) => {
           const data = empresaDoc.data();
-          empresasData.push(data);
+          empresasData.push({
+            ...data,
+            Fotos: data.Fotos || [],
+          });
         });
 
         setEmpresaDataList(empresasData);

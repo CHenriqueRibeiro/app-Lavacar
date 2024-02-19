@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   const signOutUser = async () => {
     try {
       await signOut(firebaseAuth);
-      clearUserDataFromAsyncStorage(); // Adicionando a remoção dos dados do AsyncStorage
+      clearUserDataFromAsyncStorage();
       console.log("Usuário deslogado do Firebase com sucesso!");
       alert("Conta deslogada com sucesso!");
     } catch (error) {

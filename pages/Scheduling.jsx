@@ -3,10 +3,12 @@ import { Ionicons } from "@expo/vector-icons";
 import AppointmentCard from "../components/AppointmentCard/AppointmentCard";
 import { useFirebase } from "../context/FirebaseContext";
 import { StatusBar } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 
 export default function SchedulingComponent() {
   const { horarioReservado } = useFirebase();
-
+  const navigation = useNavigation();
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
@@ -17,7 +19,9 @@ export default function SchedulingComponent() {
           width={"100%"}
           alignItems="center"
         >
-          <Ionicons name="chevron-back" size={30} color="#FFFFFF" />
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <Ionicons name="chevron-back" size={30} color="#FFFFFF" />
+          </TouchableOpacity>
           <Heading color="#FFFFFF">Agendamentos</Heading>
         </HStack>
 

@@ -9,6 +9,7 @@ import LocationScreen from "./pages/LocationScreen";
 import CustomTabs from "./components/CustomTabs";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Establishment from "./pages/Establishment";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -42,7 +43,7 @@ export default function App() {
           <LocationProvider>
             <NavigationContainer>
               <Stack.Navigator
-                initialRouteName={userData ? "CustomTabs":"Location" }
+                initialRouteName={userData ? "CustomTabs" : "Location"}
               >
                 <Stack.Screen
                   name="Location"
@@ -52,6 +53,11 @@ export default function App() {
                 <Stack.Screen
                   name="CustomTabs"
                   component={CustomTabs}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Establishment"
+                  component={Establishment}
                   options={{ headerShown: false }}
                 />
               </Stack.Navigator>

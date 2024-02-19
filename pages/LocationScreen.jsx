@@ -164,6 +164,7 @@ export default function LocationScreen() {
               style={{
                 width: "85%",
                 justifyContent: "space-around",
+                elevation: 6,
               }}
               onPress={handleUseMyLocation}
               disabled={loadingLocation}
@@ -182,6 +183,7 @@ export default function LocationScreen() {
               width: "85%",
               height: 60,
               justifyContent: "center",
+              elevation: 6,
             }}
             onPress={handleContinue}
             gap={5}

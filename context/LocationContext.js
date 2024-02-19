@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import * as Location from "expo-location";
+import { logger } from "react-native-logs";
 
 const LocationContext = createContext();
 

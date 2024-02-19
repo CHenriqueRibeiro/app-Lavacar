@@ -2,7 +2,6 @@ import {
   Avatar,
   AvatarFallbackText,
   HStack,
-  Heading,
   Text,
   VStack,
 } from "@gluestack-ui/themed";
@@ -12,7 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "../../context/LocationContext";
 export default function Header() {
   const { user } = useAuth();
-  const { userLocation, city, handleUseMyLocation } = useLocation();
+  const { userLocation, handleUseMyLocation } = useLocation();
   return (
     <HStack
       bg="#4D0288"

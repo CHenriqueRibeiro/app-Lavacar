@@ -72,7 +72,6 @@ const PersonalInformation = () => {
   const handleLogout = async () => {
     try {
       await signOut();
-      // Aqui você pode redirecionar o usuário para a tela de login ou fazer qualquer outra ação necessária após o logout
     } catch (error) {
       console.error("Erro ao realizar logout:", error.message);
     }
@@ -175,7 +174,7 @@ const PersonalInformation = () => {
           justifyContent="space-around"
           backgroundColor="#4D0288"
           borderRadius={8}
-          onPress={handleLogout} // Chama a função handleLogout no press do botão
+          onPress={handleLogout}
         >
           <ButtonText>Encerrar Seção</ButtonText>
           <Ionicons name="exit-outline" size={24} color="white" />

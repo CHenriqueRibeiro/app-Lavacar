@@ -29,6 +29,8 @@ import { ActivityIndicator, StatusBar } from "react-native";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import PersonalInformation from "./PersonalInformation";
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function Scheduling() {
   const [email, setEmail] = useState("");
@@ -40,8 +42,8 @@ export default function Scheduling() {
   const [vehicleType, setVehicleType] = useState(null);
   const [carModel, setCarModel] = useState("");
   const [motoModel, setMotoModel] = useState("");
-
   const { user, loading, signIn, signUp } = useAuth();
+  const navigation = useNavigation();
   console.log("ta logado", user);
 
   const signInUser = async () => {
@@ -65,7 +67,6 @@ export default function Scheduling() {
       console.error("Erro ao finalizar o cadastro:", error.message);
     }
   };
-
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
@@ -81,7 +82,9 @@ export default function Scheduling() {
           width={"100%"}
           alignItems="center"
         >
+         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <Ionicons name="chevron-back" size={30} color="#FFFFFF" />
+        </TouchableOpacity>
           <Heading color="#FFFFFF">
             {user === null ? "Acesse sua conta" : "Perfil"}
           </Heading>
@@ -316,15 +319,26 @@ export default function Scheduling() {
                     </Button>
                   )}
                   {registrationMode && (
-                    <Button
-                      onPress={handleFinishRegistration}
-                      backgroundColor="#4D0288"
-                      borderRadius={8}
-                      width={"80%"}
-                      height={48}
-                    >
-                      <ButtonText>Finalizar Cadastro</ButtonText>
-                    </Button>
+                    <>
+                      <Button
+                        onPress={toggleRegistrationMode}
+                        backgroundColor="#4D0288"
+                        borderRadius={8}
+                        width={"80%"}
+                        height={48}
+                      >
+                        <ButtonText>Voltar</ButtonText>
+                      </Button>
+                      <Button
+                        onPress={handleFinishRegistration}
+                        backgroundColor="#4D0288"
+                        borderRadius={8}
+                        width={"80%"}
+                        height={48}
+                      >
+                        <ButtonText>Finalizar Cadastro</ButtonText>
+                      </Button>
+                    </>
                   )}
                 </>
               )}

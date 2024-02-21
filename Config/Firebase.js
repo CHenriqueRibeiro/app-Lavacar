@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getDatabase, ref, get } from "firebase/database";
-import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const firebaseConfig = {
   apiKey: "AIzaSyDZDt-6OXvlchj6iZMVTus3FjxOiSOpKqs",
   authDomain: "lavajaapp-41d64.firebaseapp.com",
@@ -13,8 +14,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const firebaseAuth = getAuth(app);
+const firebaseAuth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 const db = getFirestore(app);
 const realtimeDatabase = getDatabase(app);
 
-export { db, realtimeDatabase, ref, get, firebaseAuth };
+export { db, realtimeDatabase, firebaseAuth };

@@ -23,6 +23,8 @@ import {
   SelectDragIndicator,
   SelectPortal,
   SelectBackdrop,
+  InputSlot,
+  InputIcon,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, StatusBar } from "react-native";
@@ -31,7 +33,7 @@ import { useAuth } from "../context/AuthContext";
 import PersonalInformation from "./PersonalInformation";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-
+import { AntDesign } from "@expo/vector-icons";
 export default function Scheduling() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,9 +44,9 @@ export default function Scheduling() {
   const [vehicleType, setVehicleType] = useState(null);
   const [carModel, setCarModel] = useState("");
   const [motoModel, setMotoModel] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { user, loading, signIn, signUp } = useAuth();
   const navigation = useNavigation();
-  console.log("ta logado", user);
 
   const signInUser = async () => {
     signIn(email, password);
@@ -67,6 +69,11 @@ export default function Scheduling() {
       console.error("Erro ao finalizar o cadastro:", error.message);
     }
   };
+  const handleState = () => {
+    setShowPassword((showState) => {
+      return !showState;
+    });
+  };
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
@@ -82,9 +89,9 @@ export default function Scheduling() {
           width={"100%"}
           alignItems="center"
         >
-         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Ionicons name="chevron-back" size={30} color="#FFFFFF" />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+            <Ionicons name="chevron-back" size={30} color="#FFFFFF" />
+          </TouchableOpacity>
           <Heading color="#FFFFFF">
             {user === null ? "Acesse sua conta" : "Perfil"}
           </Heading>
@@ -131,14 +138,22 @@ export default function Scheduling() {
                 borderColor="#4D0288"
               >
                 <InputField
-                  secureTextEntry={true}
                   onChangeText={(text) => setPassword(text)}
                   placeholder="Senha"
                   color="#4D0288"
                   autoCapitalize="none"
                   value={password}
+                  secureTextEntry={!showPassword}
                 />
+                <InputSlot pr="$3" onPress={handleState}>
+                  {showPassword ? (
+                    <AntDesign name="eye" size={24} color="black" />
+                  ) : (
+                    <Ionicons name="eye-off" size={24} color="black" />
+                  )}
+                </InputSlot>
               </Input>
+
               {registrationMode && (
                 <>
                   <Input
@@ -286,7 +301,7 @@ export default function Scheduling() {
                 <>
                   {!registrationMode && (
                     <>
-                      <HStack width={"65%"} justifyContent="space-around">
+                      <HStack>
                         <Text>Esqueceu a senha?</Text>
                         <ButtonText
                           color="blue"

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, ScrollView } from "react-native";
 import moment from "moment";
 import Date from "../../Time/Date";
 
 import "moment/locale/pt-br";
 import DiagonalTimeline from "../Hours/Hours";
-import { VStack } from "@gluestack-ui/themed";
+import { VStack, View } from "@gluestack-ui/themed";
 import { FirebaseProvider } from "../../context/FirebaseContext";
 
 const Calendar = ({ onSelectDate, selected }) => {

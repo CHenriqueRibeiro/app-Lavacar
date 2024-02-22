@@ -22,7 +22,7 @@ import { useLocation } from "../../context/LocationContext";
 
 const Card = ({ empresaData, onPress }) => {
   const navigation = useNavigation();
-  const { userLocation, reverseGeocode, city, latAndLong } = useLocation();
+  const { latAndLong } = useLocation();
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [distance, setDistance] = useState(null);
@@ -219,6 +219,11 @@ const CardSkeleton = () => {
     >
       <ContentLoader viewBox={`0 0 ${width} 300`}>
         <Rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
+        <Rect x="5" y="5" rx="5" ry="5" width="98%" height="65%" />
+        <Rect x="215" y="250" rx="5" ry="5" width="190" height="45" />
+        <Rect x="140" y="215" rx="0" ry="0" width="170" height="25" />
+        <Rect x="15" y="250" rx="0" ry="0" width="145" height="18" />
+        <Rect x="15" y="280" rx="0" ry="0" width="145" height="18" />
       </ContentLoader>
     </VStack>
   );

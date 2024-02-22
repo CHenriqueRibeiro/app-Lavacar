@@ -301,7 +301,7 @@ export default function Scheduling() {
                 <>
                   {!registrationMode && (
                     <>
-                      <HStack>
+                      <HStack gap={12}>
                         <Text>Esqueceu a senha?</Text>
                         <ButtonText
                           color="blue"

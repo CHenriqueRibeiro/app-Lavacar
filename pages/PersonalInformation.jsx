@@ -14,6 +14,29 @@ import { Ionicons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import { Fontisto } from "@expo/vector-icons";
+import ContentLoader, { Rect } from "react-content-loader/native";
+import { useWindowDimensions } from "react-native";
+
+const SkeletonLoader = () => {
+  const { width } = useWindowDimensions();
+
+  return (
+    <ContentLoader
+      speed={1}
+      width={width}
+      height={120}
+      viewBox={`0 0 ${width} 120`}
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+    >
+      <Rect x="42.84" y="9.93" rx="5" ry="5" width="100" height="95" />
+      <Rect x="330" y="40" rx="5" ry="5" width="40" height="40" />
+      <Rect x="170" y="9.67" rx="0" ry="0" width="70" height="18" />
+      <Rect x="170" y="50" rx="0" ry="0" width="120" height="10" />
+      <Rect x="170" y="85" rx="0" ry="0" width="120" height="10" />
+    </ContentLoader>
+  );
+};
 
 const PersonalInformation = () => {
   const {
@@ -89,20 +112,24 @@ const PersonalInformation = () => {
           alignItems="center"
           justifyContent="space-evenly"
         >
-          <Box
-            width={"25%"}
-            height={"80%"}
-            backgroundColor="#4D0288"
-            alignItems="center"
-            justifyContent="center"
-            borderRadius={15}
-          >
-            <Ionicons name="person-circle-outline" size={60} color="#FFFFFF" />
-          </Box>
-          <VStack height={104} justifyContent="space-around">
-            <Heading color="#000000">Dados Pessoais</Heading>
-            {userData && (
-              <>
+          {userData ? (
+            <>
+              <Box
+                width={"25%"}
+                height={"80%"}
+                backgroundColor="#4D0288"
+                alignItems="center"
+                justifyContent="center"
+                borderRadius={15}
+              >
+                <Ionicons
+                  name="person-circle-outline"
+                  size={60}
+                  color="#FFFFFF"
+                />
+              </Box>
+              <VStack height={104} justifyContent="space-around">
+                <Heading color="#000000">Dados Pessoais</Heading>
                 <Text fontWeight="700" color="#000000">
                   Nome:
                   <Text>{userData.name}</Text>
@@ -111,10 +138,12 @@ const PersonalInformation = () => {
                   Telefone:
                   <Text>{userData.phoneNumber}</Text>
                 </Text>
-              </>
-            )}
-          </VStack>
-          <FontAwesome6 name="edit" size={30} color="black" />
+              </VStack>
+              <FontAwesome6 name="edit" size={30} color="black" />
+            </>
+          ) : (
+            <SkeletonLoader />
+          )}
         </HStack>
 
         <HStack
@@ -126,45 +155,51 @@ const PersonalInformation = () => {
           alignItems="center"
           justifyContent="space-evenly"
         >
-          <Box
-            width={"25%"}
-            height={"80%"}
-            backgroundColor="#4D0288"
-            alignItems="center"
-            justifyContent="center"
-            borderRadius={15}
-          >
-            <Fontisto name="car" size={60} color="white" />
-          </Box>
-          <VStack height={104} justifyContent="space-around">
-            <Heading color="#000000">Veículo</Heading>
-            {userData && (
-              <>
-                {userData.carModel === "" || null ? (
-                  <Box display="none"></Box>
-                ) : (
-                  <Text fontWeight="700" color="#000000">
-                    Modelo do Carro:
-                    <Text>{userData.carModel}</Text>
-                  </Text>
+          {userData ? (
+            <>
+              <Box
+                width={"25%"}
+                height={"80%"}
+                backgroundColor="#4D0288"
+                alignItems="center"
+                justifyContent="center"
+                borderRadius={15}
+              >
+                <Fontisto name="car" size={60} color="white" />
+              </Box>
+              <VStack height={104} justifyContent="space-around">
+                <Heading color="#000000">Veículo</Heading>
+                {userData && (
+                  <>
+                    {userData.carModel === "" || null ? (
+                      <Box display="none"></Box>
+                    ) : (
+                      <Text fontWeight="700" color="#000000">
+                        Modelo do Carro:
+                        <Text>{userData.carModel}</Text>
+                      </Text>
+                    )}
+                    {userData.motoModel === "" || null ? (
+                      <Box display="none"></Box>
+                    ) : (
+                      <Text fontWeight="700" color="#000000">
+                        Modelo da Moto:
+                        <Text>{userData.motoModel}</Text>
+                      </Text>
+                    )}
+                  </>
                 )}
-                {userData.motoModel === "" || null ? (
-                  <Box display="none"></Box>
-                ) : (
-                  <Text fontWeight="700" color="#000000">
-                    Modelo da Moto:
-                    <Text>{userData.motoModel}</Text>
-                  </Text>
-                )}
-              </>
-            )}
-          </VStack>
-          <FontAwesome6
-            name="edit"
-            size={30}
-            color="black"
-            onPress={updateUserData}
-          />
+              </VStack>
+              <FontAwesome6
+                name="edit"
+                size={30}
+                color="black"
+                onPress={updateUserData}
+              />
+            </>
+          ) : (
+            <SkeletonLoader />
+          )}
         </HStack>
 
         <Button

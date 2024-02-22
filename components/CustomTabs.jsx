@@ -1,10 +1,11 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
-import { View, KeyboardAvoidingView, Platform } from "react-native";
+import {  KeyboardAvoidingView, Platform } from "react-native";
 import Home from "../pages/Home";
 import Scheduling from "../pages/Scheduling";
 import Account from "../pages/Account";
+import { View } from "@gluestack-ui/themed";
 
 const Tab = createBottomTabNavigator();
 

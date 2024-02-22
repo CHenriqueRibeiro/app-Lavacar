@@ -10,6 +10,7 @@ import CustomTabs from "./components/CustomTabs";
 import { NavigationContainer } from "@react-navigation/native";
 import Establishment from "./pages/Establishment";
 import { firebaseAuth } from "./Config/Firebase";
+import { Image } from "@gluestack-ui/themed";
 
 const Stack = createStackNavigator();
 
@@ -18,7 +19,6 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = firebaseAuth.onAuthStateChanged((authUser) => {
-      console.log("ta logado", firebaseAuth.currentUser);
       setLoading(false);
     });
 
@@ -26,10 +26,18 @@ export default function App() {
   }, []);
 
   if (loading) {
-    console.log("entrou no carregamento");
     return (
-      <View flex={1} alignItems="center" justifyContent="center">
-        <Spinner size="large" color="#4D0288" animating={true} />
+      <View
+        flex={1}
+        alignItems="center"
+        justifyContent="center"
+        bgColor="#FFFFFF"
+      >
+        <Image
+          source={require("./assets/logocomfundo.png")}
+          alt="logomarca"
+          style={{ width: "100%", height: "50%", resizeMode: "contain" }}
+        />
       </View>
     );
   }

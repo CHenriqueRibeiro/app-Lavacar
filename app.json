@@ -15,11 +15,10 @@
     "ios": {
       "bundleIdentifier": "com.henriqueribeiro.myapp",
       "buildNumber": "1",
-      "googleServicesFile": "./GoogleService-Info.plist",
+
       "supportsTablet": true
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/logosemfundo.png",
         "backgroundColor": "#ffffff"
@@ -36,9 +35,6 @@
       }
     },
     "plugins": [
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
-      "@react-native-firebase/crashlytics",
       [
         "expo-build-properties",
         {

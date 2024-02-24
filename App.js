@@ -31,10 +31,10 @@ export default function App() {
         flex={1}
         alignItems="center"
         justifyContent="center"
-        bgColor="#FFFFFF"
+        bgColor="#FCFCFD"
       >
         <Image
-          source={require("./assets/logocomfundo.png")}
+          source={require("./assets/logosemfundo.png")}
           alt="logomarca"
           style={{ width: "100%", height: "50%", resizeMode: "contain" }}
         />

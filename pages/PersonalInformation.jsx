@@ -5,6 +5,8 @@ import {
   ButtonText,
   HStack,
   Heading,
+  Input,
+  InputField,
   StatusBar,
   Text,
   VStack,
@@ -16,7 +18,7 @@ import { useAuth } from "../context/AuthContext";
 import { Fontisto } from "@expo/vector-icons";
 import ContentLoader, { Rect } from "react-content-loader/native";
 import { useWindowDimensions } from "react-native";
-
+import MaskInput, { Masks } from "react-native-mask-input";
 const SkeletonLoader = () => {
   const { width } = useWindowDimensions();
 
@@ -42,13 +44,17 @@ const PersonalInformation = () => {
   const {
     user,
     readUserDataFromFirestore,
-    updateUserDataInFirestore,
+    updateVehicleDataInFirestore,
     signOut,
+    updatePhoneNumber,
   } = useAuth();
   const [userData, setUserData] = useState(null);
   const [carModel, setCarModel] = useState("");
   const [motoModel, setMotoModel] = useState("");
-
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [editModePerson, setEditModePerson] = useState(false);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -73,25 +79,60 @@ const PersonalInformation = () => {
     }
   }, [user, readUserDataFromFirestore]);
 
+  const handleRemoveInput = (inputType) => {
+    if (
+      (inputType === "carModel" && motoModel !== "") ||
+      (inputType === "motoModel" && carModel !== "")
+    ) {
+      if (inputType === "carModel") {
+        setCarModel("");
+      } else {
+        setMotoModel("");
+      }
+    }
+  };
+  const handleRemoveInputPerson = (inputType) => {
+    if (
+      (inputType === "name" && userData.name !== "") ||
+      (inputType === "phoneNumber" && userData.phoneNumber !== "")
+    ) {
+      if (inputType === "name") {
+        return userData.name;
+      } else {
+        return userData.phoneNumber;
+      }
+    }
+  };
+
   const updateUserData = async () => {
     try {
       if (user) {
-        const userDataToUpdate = {
-          veiculos: {
-            carro: {
-              modelo: carModel,
-            },
-            moto: {
-              modelo: motoModel,
-            },
-          },
-        };
-        await updateUserDataInFirestore(user.uid, userDataToUpdate);
+        await updateVehicleDataInFirestore(user.uid, carModel, motoModel);
+
+        const updatedData = await readUserDataFromFirestore(user.uid);
+        setUserData(updatedData);
+
+        setEditMode(false);
       }
     } catch (error) {
       console.error("Erro ao atualizar dados do usuário:", error.message);
     }
   };
+  const updateUserDataPhoneAndNumber = async () => {
+    try {
+      if (user) {
+        await updatePhoneNumber(user.uid, name, phoneNumber);
+
+        const updatedData = await readUserDataFromFirestore(user.uid);
+        setUserData(updatedData);
+
+        setEditModePerson(false);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar dados do usuário:", error.message);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await signOut();
@@ -128,18 +169,91 @@ const PersonalInformation = () => {
                   color="#FFFFFF"
                 />
               </Box>
-              <VStack height={104} justifyContent="space-around">
+              <VStack height={104} width={"50%"} justifyContent="space-around">
                 <Heading color="#000000">Dados Pessoais</Heading>
-                <Text fontWeight="700" color="#000000">
-                  Nome:
-                  <Text>{userData.name}</Text>
-                </Text>
-                <Text fontWeight="700" color="#000000">
-                  Telefone:
-                  <Text>{userData.phoneNumber}</Text>
-                </Text>
+                {editModePerson ? (
+                  <VStack alignItems="center">
+                    <HStack
+                      width={"100%"}
+                      alignItems="center"
+                      gap={15}
+                      marginBottom={10}
+                    >
+                      <Input placeholder="Nome" width={"80%"}>
+                        <InputField
+                          value={name}
+                          onChangeText={(text) => setName(text)}
+                          placeholder={
+                            userData.name === "" ? "name" : userData.name
+                          }
+                        />
+                      </Input>
+                      <FontAwesome6
+                        name="trash"
+                        size={20}
+                        color="red"
+                        onPress={() => handleRemoveInputPerson("name")}
+                      />
+                    </HStack>
+                    <HStack
+                      width={"100%"}
+                      alignItems="center"
+                      gap={15}
+                      mb={10}
+                      ç
+                    >
+                      <Input placeholder="Telefone" width={"80%"}>
+                        <MaskInput
+                          value={phoneNumber}
+                          onChangeText={(text) => setPhoneNumber(text)}
+                          placeholder={
+                            userData.phoneNumber === ""
+                              ? "moto"
+                              : userData.phoneNumber
+                          }
+                          mask={Masks.BRL_PHONE}
+                        />
+                      </Input>
+                      <FontAwesome6
+                        name="trash"
+                        size={20}
+                        color="red"
+                        onPress={() => handleRemoveInputPerson("phoneNumber")}
+                      />
+                    </HStack>
+                  </VStack>
+                ) : (
+                  <>
+                    <Text fontWeight="700" color="#000000">
+                      Nome:
+                      <Text> {userData.name}</Text>
+                    </Text>
+                    <Text fontWeight="700" color="#000000">
+                      Telefone:
+                      <Text> {userData.phoneNumber}</Text>
+                    </Text>
+                  </>
+                )}
               </VStack>
-              <FontAwesome6 name="edit" size={30} color="black" />
+              <FontAwesome6
+                name="edit"
+                size={30}
+                color="black"
+                onPress={() => setEditModePerson(true)}
+              />
+              {editModePerson && (
+                <>
+                  <Button
+                    onPress={updateUserDataPhoneAndNumber}
+                    justifyContent="space-around"
+                    height={35}
+                    width={"80%"}
+                  >
+                    <ButtonText>Atualizar dados</ButtonText>
+                    <FontAwesome6 name="check" size={28} color="white" />
+                  </Button>
+                </>
+              )}
             </>
           ) : (
             <SkeletonLoader />
@@ -149,7 +263,7 @@ const PersonalInformation = () => {
         <HStack
           marginTop={15}
           width={"100%"}
-          height={120}
+          height={editMode ? 200 : 120}
           backgroundColor="#FFFFFF"
           borderRadius={15}
           alignItems="center"
@@ -167,35 +281,108 @@ const PersonalInformation = () => {
               >
                 <Fontisto name="car" size={60} color="white" />
               </Box>
-              <VStack height={104} justifyContent="space-around">
-                <Heading color="#000000">Veículo</Heading>
-                {userData && (
+              <VStack
+                height={editMode ? "80%" : 104}
+                width={editMode ? "62%" : "50%"}
+                justifyContent={editMode ? "space-between" : "space-around"}
+              >
+                <Heading color="#000000">Veículo(s)</Heading>
+                {editMode ? (
+                  <>
+                    <VStack alignItems="center">
+                      <HStack
+                        width={"100%"}
+                        alignItems="center"
+                        gap={15}
+                        marginBottom={10}
+                      >
+                        <Input placeholder="Modelo do Carro" width={"80%"}>
+                          <InputField
+                            value={carModel}
+                            onChangeText={(text) => setCarModel(text)}
+                            placeholder={
+                              userData.carModel === ""
+                                ? "carro"
+                                : userData.carModel
+                            }
+                          />
+                        </Input>
+                        <FontAwesome6
+                          name="trash"
+                          size={20}
+                          color="red"
+                          onPress={() => handleRemoveInput("carModel")}
+                        />
+                      </HStack>
+                      <HStack
+                        width={"100%"}
+                        alignItems="center"
+                        gap={15}
+                        mb={10}
+                        ç
+                      >
+                        <Input placeholder="Modelo da Moto" width={"80%"}>
+                          <InputField
+                            value={motoModel}
+                            onChangeText={(text) => setMotoModel(text)}
+                            placeholder={
+                              userData.motoModel === ""
+                                ? "moto"
+                                : userData.motoModel
+                            }
+                          />
+                        </Input>
+                        <FontAwesome6
+                          name="trash"
+                          size={20}
+                          color="red"
+                          onPress={() => handleRemoveInput("motoModel")}
+                        />
+                      </HStack>
+                    </VStack>
+                    {editMode && (
+                      <>
+                        <Button
+                          onPress={updateUserData}
+                          justifyContent="space-around"
+                          height={35}
+                          width={"80%"}
+                        >
+                          <ButtonText>Atualizar dados</ButtonText>
+                          <FontAwesome6 name="check" size={28} color="white" />
+                        </Button>
+                      </>
+                    )}
+                  </>
+                ) : (
                   <>
                     {userData.carModel === "" || null ? (
                       <Box display="none"></Box>
                     ) : (
                       <Text fontWeight="700" color="#000000">
-                        Modelo do Carro:
-                        <Text>{userData.carModel}</Text>
+                        Carro:
+                        <Text> {userData.carModel}</Text>
                       </Text>
                     )}
                     {userData.motoModel === "" || null ? (
                       <Box display="none"></Box>
                     ) : (
                       <Text fontWeight="700" color="#000000">
-                        Modelo da Moto:
-                        <Text>{userData.motoModel}</Text>
+                        Moto:
+                        <Text> {userData.motoModel}</Text>
                       </Text>
                     )}
                   </>
                 )}
               </VStack>
-              <FontAwesome6
-                name="edit"
-                size={30}
-                color="black"
-                onPress={updateUserData}
-              />
+              {!editMode && (
+                <FontAwesome6
+                  name="edit"
+                  size={30}
+                  color="black"
+                  onPress={() => setEditMode(true)}
+                />
+              )}
             </>
           ) : (
             <SkeletonLoader />

@@ -34,6 +34,7 @@ import PersonalInformation from "./PersonalInformation";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
+import MaskInput, { Masks } from "react-native-mask-input";
 export default function Scheduling() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -185,12 +186,13 @@ export default function Scheduling() {
                     width={"95%"}
                     borderColor="#4D0288"
                   >
-                    <InputField
+                    <MaskInput
                       onChangeText={(text) => setPhone(text)}
                       placeholder="Número de Telefone"
                       color="#4D0288"
                       keyboardType="numeric"
                       value={phone}
+                      mask={Masks.BRL_PHONE}
                     />
                   </Input>
                 </>

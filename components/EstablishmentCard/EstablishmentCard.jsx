@@ -10,20 +10,25 @@ import {
   Image,
   View,
   ScrollView,
+  Modal,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
 } from "@gluestack-ui/themed";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Dimensions, StyleSheet, useWindowDimensions } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../Config/Firebase";
+import { db, firebaseAuth } from "../../Config/Firebase";
 import ContentLoader, { Rect } from "react-content-loader/native";
 import { useLocation } from "../../context/LocationContext";
 
 const Card = ({ empresaData, onPress }) => {
   const navigation = useNavigation();
   const { latAndLong } = useLocation();
-
+  const [showModal, setShowModal] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [distance, setDistance] = useState(null);
 
@@ -81,78 +86,137 @@ const Card = ({ empresaData, onPress }) => {
   );
 
   const handleContinue = () => {
-    handleCardPress(empresaData);
+    if (firebaseAuth.currentUser) {
+      handleCardPress(empresaData);
+    } else {
+      setShowModal(true);
+    }
   };
 
   const handleCardPress = (empresaData) => {
     navigation.navigate("Establishment", { empresaData });
   };
+  const goToAccount = () => {
+    setShowModal(false);
+    setTimeout(() => {
+      navigation.navigate("Account");
+    }, 150);
+  };
 
   return (
-    <VStack
-      overflow="hidden"
-      width="95%"
-      backgroundColor="#4D0288"
-      height={300}
-      borderRadius={10}
-      style={{
-        shadowRadius: 30,
-        elevation: 6,
-        shadowColor: "black",
-      }}
-      onTouchEnd={onPress}
-    >
-      <Carousel
-        data={empresaData.Fotos}
-        renderItem={renderItem}
-        sliderWidth={Dimensions.get("window").width}
-        itemWidth={Dimensions.get("window").width}
-        loop={true}
-        onSnapToItem={(index) => setActiveSlide(index)}
-      />
-      <Pagination
-        dotsLength={empresaData.Fotos ? empresaData.Fotos.length : 0}
-        activeDotIndex={activeSlide}
-        containerStyle={styles.paginationContainer}
-        dotStyle={styles.paginationDot}
-        inactiveDotStyle={styles.paginationInactiveDot}
-        inactiveDotOpacity={0.4}
-        inactiveDotScale={0.6}
-      />
-      <VStack width="100%" height="30%">
-        <Heading color="$white" pl={6} textAlign="center">
-          {empresaData.NomeDaEmpresa}
-        </Heading>
-        <HStack alignItems="center" justifyContent="space-between" padding={5}>
-          <HStack flexDirection="column">
-            <HStack>
-              <Ionicons name="location-sharp" size={24} color="white" />
-              {distance !== null && (
-                <Text color="white">
-                  {distance < 1
-                    ? `${Math.round(distance * 1000)} metros`
-                    : `${distance.toFixed(2)} km`}
-                </Text>
-              )}
-            </HStack>
-            <HStack>
-              <MaterialIcons name="attach-money" size={24} color="white" />
-              <Text color="white"> {empresaData.ValoresDosServicos} </Text>
-            </HStack>
-          </HStack>
-          <Button
-            width={180}
+    <>
+      <VStack
+        overflow="hidden"
+        width="95%"
+        backgroundColor="#4D0288"
+        height={300}
+        borderRadius={10}
+        style={{
+          shadowRadius: 30,
+          elevation: 6,
+          shadowColor: "black",
+        }}
+        onTouchEnd={onPress}
+      >
+        <Carousel
+          data={empresaData.Fotos}
+          renderItem={renderItem}
+          sliderWidth={Dimensions.get("window").width}
+          itemWidth={Dimensions.get("window").width}
+          loop={true}
+          onSnapToItem={(index) => setActiveSlide(index)}
+        />
+        <Pagination
+          dotsLength={empresaData.Fotos ? empresaData.Fotos.length : 0}
+          activeDotIndex={activeSlide}
+          containerStyle={styles.paginationContainer}
+          dotStyle={styles.paginationDot}
+          inactiveDotStyle={styles.paginationInactiveDot}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+        />
+        <VStack width="100%" height="30%">
+          <Heading color="$white" pl={6} textAlign="center">
+            {empresaData.NomeDaEmpresa}
+          </Heading>
+          <HStack
             alignItems="center"
-            justifyContent="space-around"
-            bg="$white"
-            onPress={handleContinue}
+            justifyContent="space-between"
+            padding={5}
           >
-            <ButtonText color="#4D0288">Agendar</ButtonText>
-            <MaterialIcons name="schedule-send" size={24} color="#4D0288" />
-          </Button>
-        </HStack>
+            <HStack flexDirection="column">
+              <HStack>
+                <Ionicons name="location-sharp" size={24} color="white" />
+                {distance !== null && (
+                  <Text color="white">
+                    {distance < 1
+                      ? `${Math.round(distance * 1000)} metros`
+                      : `${distance.toFixed(2)} km`}
+                  </Text>
+                )}
+              </HStack>
+              <HStack>
+                <MaterialIcons name="attach-money" size={24} color="white" />
+                <Text color="white"> {empresaData.ValoresDosServicos} </Text>
+              </HStack>
+            </HStack>
+            <Button
+              width={180}
+              alignItems="center"
+              justifyContent="space-around"
+              bg="$white"
+              onPress={handleContinue}
+            >
+              <ButtonText color="#4D0288">Agendar</ButtonText>
+              <MaterialIcons name="schedule-send" size={24} color="#4D0288" />
+            </Button>
+          </HStack>
+        </VStack>
       </VStack>
-    </VStack>
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+        }}
+      >
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader borderBottomWidth="$0">
+            <VStack space="sm">
+              <Heading size="lg" color="#4D0288">
+                Não tem conta?
+              </Heading>
+              <Text size="sm">
+                Faça login ou cadastre-se para realizar seu(s) agendamento(s).
+              </Text>
+            </VStack>
+          </ModalHeader>
+
+          <ModalFooter borderTopWidth="$0">
+            <VStack space="lg" w="$full">
+              <Button onPress={goToAccount}>
+                <ButtonText>Login / Criar conta</ButtonText>
+              </Button>
+              <HStack>
+                <Button
+                  variant="link"
+                  size="sm"
+                  onPress={() => {
+                    setShowModal(false);
+                  }}
+                  alignItems="center"
+                >
+                  <Ionicons name="chevron-back" size={25} color="#4D0288" />
+                  <ButtonText color="#4D0288" fontSize={18}>
+                    Voltar
+                  </ButtonText>
+                </Button>
+              </HStack>
+            </VStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

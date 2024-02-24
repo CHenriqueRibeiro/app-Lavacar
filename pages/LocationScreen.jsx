@@ -71,8 +71,7 @@ export default function LocationScreen() {
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View
         style={{
-          height: "100%",
-          width: "100%",
+          flex: 1,
           alignItems: "center",
           backgroundColor: "#FFFFFF",
           justifyContent: "space-between",
@@ -91,24 +90,26 @@ export default function LocationScreen() {
             width: "100%",
             backgroundColor: "#4D0288",
             alignItems: "center",
-            justifyContent: "space-around",
           }}
         >
           <VStack
             style={{
               width: "100%",
-              height: 200,
+              height: "65%",
               alignItems: "center",
-              justifyContent: "space-between",
+              gap: 25,
+              marginTop: 15,
             }}
           >
-            <Heading color="#FFFFFF">Procure seu endereço</Heading>
+            <Heading color="#FFFFFF" fontSize={24}>
+              Procure seu Bairro
+            </Heading>
             <View style={{ position: "relative", width: "85%" }}>
               {suggestions.length > 0 && (
                 <View
                   style={{
                     position: "absolute",
-                    bottom: 50,
+                    bottom: 60,
                     width: "100%",
                     zIndex: 1,
                     borderColor: "#FFFFFF",
@@ -144,20 +145,23 @@ export default function LocationScreen() {
                 variant="outline"
                 size="md"
                 width={"100%"}
+                height={55}
                 style={{ zIndex: 2 }}
               >
                 <InputField
                   autoCorrect={false}
                   color="#FFFFFF"
                   placeholderTextColor={"#FFFFFF"}
-                  placeholder="Digite seu bairro"
+                  placeholder="Digite seu bairro, cidade"
                   value={userLocation}
                   onChangeText={handleInputChange}
                 />
               </Input>
             </View>
 
-            <Text color="#FFFFFF">OU</Text>
+            <Text color="#FFFFFF" fontWeight="300">
+              OU
+            </Text>
             <Button
               bg="#FFFFFF"
               borderRadius={"$xl"}
@@ -176,23 +180,35 @@ export default function LocationScreen() {
               </ButtonText>
             </Button>
           </VStack>
-          <Button
-            bg={isContinueButtonDisabled ? "#919396" : "#FFFFFF"}
-            borderRadius={"$2xl"}
-            style={{
-              width: "85%",
-              height: 60,
-              justifyContent: "center",
-              elevation: 6,
-            }}
-            onPress={handleContinue}
-            gap={5}
-            disabled={isContinueButtonDisabled}
+          <VStack
+            alignItems="center"
+            justifyContent="center"
+            width={"90%"}
+            height={"25%"}
           >
-            <ButtonText fontSize={"$xl"} color="#4D0288">
-              Continuar
-            </ButtonText>
-          </Button>
+            <Button
+              bg={isContinueButtonDisabled ? "#919396" : "#FFFFFF"}
+              borderRadius={"$2xl"}
+              style={{
+                width: "100%",
+                height: 60,
+                justifyContent: "center",
+                alignItems: "center",
+                elevation: 6,
+              }}
+              onPress={handleContinue}
+              disabled={isContinueButtonDisabled}
+            >
+              <ButtonText
+                fontSize={"$xl"}
+                color="#4D0288"
+                justifyContent="center"
+                alignItems="center"
+              >
+                Continuar
+              </ButtonText>
+            </Button>
+          </VStack>
         </VStack>
       </View>
     </>

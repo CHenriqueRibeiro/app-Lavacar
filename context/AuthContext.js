@@ -4,7 +4,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
   createUserWithEmailAndPassword,
-  updateProfile,
 } from "firebase/auth";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,13 +13,18 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [personalData, setPersonalData] = useState({
+    name: "",
+    phoneNumber: "",
+  });
+  const [userDataLoaded, setUserDataLoaded] = useState(false);
+
   useEffect(() => {
     const unsubscribe = firebaseAuth.onAuthStateChanged((authUser) => {
       console.log("antes", firebaseAuth.currentUser);
-      
+
       setUser(firebaseAuth.currentUser);
       setLoading(false);
-      
     });
 
     return () => unsubscribe();
@@ -146,13 +150,16 @@ export const AuthProvider = ({ children }) => {
   const readUserDataFromFirestore = async (userId) => {
     const firestore = getFirestore();
     const userDocRef = doc(firestore, "Usuarios", userId);
-
+  
     try {
       const userDocSnapshot = await getDoc(userDocRef);
-
+  
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
+        setPersonalData(userData);
+setUserDataLoaded(true);
 
+  
         return userData;
       } else {
         return null;
@@ -163,15 +170,43 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const updatePhoneNumberAndMore = async (user, phone, name) => {
+  const updatePhoneNumber = async (userId, name, phoneNumber) => {
+    const firestore = getFirestore();
+    const userDocRef = doc(firestore, "Usuarios", userId);
+
     try {
-      await Promise.all([
-        updateProfile(user, {
-          phoneNumber: phone,
-          name: name,
-        }),
-      ]);
+      await setDoc(
+        userDocRef,
+        {
+          name: name || "",
+          phoneNumber: phoneNumber || "",
+        },
+        { merge: true }
+      );
+
+      alert("Dados Pessoais atualizados com sucesso!");
     } catch (error) {
+      console.error("Erro ao atualizar dados pessoais:", error.message);
+      throw error;
+    }
+  };
+  const updateVehicleDataInFirestore = async (userId, carModel, motoModel) => {
+    const firestore = getFirestore();
+    const userDocRef = doc(firestore, "Usuarios", userId);
+
+    try {
+      await setDoc(
+        userDocRef,
+        {
+          carModel: carModel || "",
+          motoModel: motoModel || "",
+        },
+        { merge: true }
+      );
+
+      alert("Dados do veículo atualizados com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar dados do veículo:", error.message);
       throw error;
     }
   };
@@ -183,8 +218,9 @@ export const AuthProvider = ({ children }) => {
     signOut: signOutUser,
     getUserData,
     signUp,
-    updatePhoneNumberAndMore,
+    updatePhoneNumber,
     readUserDataFromFirestore,
+    updateVehicleDataInFirestore,
   };
 
   return (

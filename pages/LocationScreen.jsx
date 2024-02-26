@@ -21,14 +21,24 @@ export default function LocationScreen() {
     setUserLocation,
     loadingLocation,
     handleUseMyLocation,
+    reverseGeocode,
   } = useLocation();
   const [suggestions, setSuggestions] = useState([]);
   const [isContinueButtonDisabled, setContinueButtonDisabled] = useState(true);
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+  const [locationFilledByButton, setLocationFilledByButton] = useState(false);
+
   const navigation = useNavigation();
 
-  const handleContinue = () => {
-    navigation.navigate("CustomTabs");
+  const handleContinue = async () => {
+    if (selectedSuggestion) {
+      await reverseGeocode(selectedSuggestion.geometry.lat, selectedSuggestion.geometry.lng);
+      navigation.navigate("CustomTabs");
+    } else {
+      alert("Por favor, escolha uma sugestão válida.");
+    }
   };
+
   const getAutocompleteSuggestions = async (query) => {
     try {
       const apiKey = "fbb87def325a48768cbc78cc3708bc9f";
@@ -42,6 +52,7 @@ export default function LocationScreen() {
         .map((result) => ({
           suburb: result.components.suburb,
           city: result.components.city,
+          geometry: result.geometry,
         }));
 
       const uniqueSuggestions = suggestions.filter(
@@ -57,14 +68,26 @@ export default function LocationScreen() {
       console.error("Erro ao obter sugestões:", error);
     }
   };
+
   const handleInputChange = (text) => {
     setUserLocation(text);
+    setContinueButtonDisabled(true); 
     getAutocompleteSuggestions(text);
   };
+
+  const handleSuggestionPress = (suggestion) => {
+    setUserLocation(`${suggestion.suburb || ""}, ${suggestion.city || ""}`);
+    setSelectedSuggestion(suggestion);
+    setContinueButtonDisabled(false); 
+    setSuggestions([]);
+  };
+
   useEffect(() => {
     const trimmedUserLocation = userLocation ? userLocation.trim() : "";
-    setContinueButtonDisabled(!trimmedUserLocation && suggestions.length === 0);
-  }, [userLocation, suggestions]);
+    setContinueButtonDisabled(
+      !trimmedUserLocation && suggestions.length === 0 && !selectedSuggestion
+    );
+  }, [userLocation, suggestions, selectedSuggestion]);
 
   return (
     <>
@@ -120,13 +143,7 @@ export default function LocationScreen() {
                   {suggestions.map((suggestion, index) => (
                     <TouchableOpacity
                       key={index}
-                      onPress={() => {
-                        const suburb = suggestion.suburb || "";
-                        const city = suggestion.city || "";
-
-                        setUserLocation(`${suburb}, ${city}`);
-                        setSuggestions([]);
-                      }}
+                      onPress={() => handleSuggestionPress(suggestion)}
                     >
                       <Text
                         textAlignVertical="center"

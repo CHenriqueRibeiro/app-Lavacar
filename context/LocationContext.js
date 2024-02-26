@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import * as Location from "expo-location";
-import { logger } from "react-native-logs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LocationContext = createContext();
 
@@ -13,7 +13,7 @@ export const LocationProvider = ({ children }) => {
 
   const handleUseMyLocation = async () => {
     setLoadingLocation(true);
-
+    console.log("localizacao e essa (3)", userLocation);
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -25,7 +25,6 @@ export const LocationProvider = ({ children }) => {
 
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-
       reverseGeocode(latitude, longitude);
     } catch (error) {
       console.error("Erro ao obter localização:", error);
@@ -45,14 +44,17 @@ export const LocationProvider = ({ children }) => {
       const neighborhood = data.results[0].components.suburb;
       const city = data.results[0].components.city;
       const latAndLon = data.results[0].geometry;
-
       const locationString = `${neighborhood}, ${city}`;
+      const combinedData = { location: locationString, latAndLon };
+      AsyncStorage.setItem("userLocation", JSON.stringify(combinedData));
 
+      setLatAndLong(latAndLon);
       setUserLocation(locationString);
       setCity(city);
-      setLatAndLong(latAndLon);
       setLoadingLocation(false);
       setErrorMsg(null);
+      console.log("localizacao atual e: (4)", userLocation);
+      console.log("ta salvando isso no assync (5)", combinedData);
     } catch (error) {
       console.error("Erro na geocodificação reversa:", error);
       setErrorMsg("Erro na geocodificação reversa");

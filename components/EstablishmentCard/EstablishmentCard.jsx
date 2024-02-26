@@ -23,35 +23,49 @@ import { Dimensions, StyleSheet, useWindowDimensions } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { db, firebaseAuth } from "../../Config/Firebase";
 import ContentLoader, { Rect } from "react-content-loader/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocation } from "../../context/LocationContext";
 
 const Card = ({ empresaData, onPress }) => {
   const navigation = useNavigation();
-  const { latAndLong } = useLocation();
   const [showModal, setShowModal] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [distance, setDistance] = useState(null);
+  const { userLocation } = useLocation();
 
   useEffect(() => {
-    if (latAndLong) {
-      const empresaLatitude = empresaData.Geolocalizacao.latitude;
-      const empresaLongitude = empresaData.Geolocalizacao.longitude;
+    const fetchCoordinates = async () => {
+      try {
+        const savedDataString = await AsyncStorage.getItem("userLocation");
+        if (savedDataString) {
+          const savedData = JSON.parse(savedDataString);
+          if (savedData && savedData.latAndLon) {
+            const { lat, lng } = savedData.latAndLon;
 
-      const empresaCoords = {
-        latitude: empresaLatitude,
-        longitude: empresaLongitude,
-      };
+            const empresaCoords = {
+              latitude: empresaData.Geolocalizacao.latitude,
+              longitude: empresaData.Geolocalizacao.longitude,
+            };
 
-      const userCoords = {
-        latitude: latAndLong.lat,
-        longitude: latAndLong.lng,
-      };
+            const userCoords = {
+              latitude: lat,
+              longitude: lng,
+            };
 
-      const calculatedDistance = calculateDistance(userCoords, empresaCoords);
+            const calculatedDistance = calculateDistance(
+              userCoords,
+              empresaCoords
+            );
+            setDistance(calculatedDistance);
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao recuperar dados do AsyncStorage:", error);
+      }
+    };
 
-      setDistance(calculatedDistance);
-    }
-  }, [latAndLong, empresaData]);
+    fetchCoordinates();
+  }, [empresaData, userLocation]);
 
   const calculateDistance = (coord1, coord2) => {
     const R = 6371;

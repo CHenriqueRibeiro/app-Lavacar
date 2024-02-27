@@ -13,9 +13,14 @@ import { Fontisto } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import ServiceCard from "../components/ServiceCard/ServiceCard";
-import { StatusBar } from "react-native";
+import { StatusBar, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 export default function Establishment({ route }) {
   const { empresaData } = route.params;
+  const navigation = useNavigation();
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#4D0288" />
@@ -29,8 +34,12 @@ export default function Establishment({ route }) {
           borderBottomRightRadius={15}
         >
           <HStack alignItems="center" width={"100%"} height={"25%"}>
-            <Ionicons name="chevron-back-outline" size={24} color="white" />
-            <Heading color="white">Voltar</Heading>
+            <TouchableOpacity onPress={handleGoBack}>
+              <HStack alignItems="center">
+                <Ionicons name="chevron-back-outline" size={24} color="white" />
+                <Heading color="white">Voltar</Heading>
+              </HStack>
+            </TouchableOpacity>
           </HStack>
           <HStack
             alignItems="center"

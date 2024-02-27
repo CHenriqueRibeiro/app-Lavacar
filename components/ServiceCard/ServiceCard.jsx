@@ -28,6 +28,10 @@ export default function ServiceCard({ servicos }) {
   const fecharActionSheet = () => {
     actionSheetRef.current?.hide();
   };
+  const handleDateSelection = (date) => {
+    setSelectedDate(date);
+  };
+
   return (
     <ScrollView vertical width={"100%"}>
       {Object.entries(servicos).map(([nomeServico, valorServico]) => (
@@ -76,7 +80,7 @@ export default function ServiceCard({ servicos }) {
           <ActionSheet ref={actionSheetRef}>
             <View alignItems="center">
               <Calendar
-                onSelectDate={setSelectedDate}
+                onSelectDate={(date) => handleDateSelection(date)}
                 selected={selectedDate}
               />
               <Button

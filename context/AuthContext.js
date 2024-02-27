@@ -150,16 +150,15 @@ export const AuthProvider = ({ children }) => {
   const readUserDataFromFirestore = async (userId) => {
     const firestore = getFirestore();
     const userDocRef = doc(firestore, "Usuarios", userId);
-  
+
     try {
       const userDocSnapshot = await getDoc(userDocRef);
-  
+
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
         setPersonalData(userData);
-setUserDataLoaded(true);
+        setUserDataLoaded(true);
 
-  
         return userData;
       } else {
         return null;
@@ -221,6 +220,7 @@ setUserDataLoaded(true);
     updatePhoneNumber,
     readUserDataFromFirestore,
     updateVehicleDataInFirestore,
+    personalData
   };
 
   return (

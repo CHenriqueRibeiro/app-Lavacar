@@ -55,18 +55,31 @@ const PersonalInformation = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [editModePerson, setEditModePerson] = useState(false);
+  const [originalCarModel, setOriginalCarModel] = useState("");
+  const [originalMotoModel, setOriginalMotoModel] = useState("");
+  const [originalName, setOriginalName] = useState("");
+  const [originalPhoneNumber, setOriginalPhoneNumber] = useState("");
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         if (user) {
           const data = await readUserDataFromFirestore(user.uid);
           setUserData(data);
-
           if (data && data.veiculos && data.veiculos.carro) {
             setCarModel(data.veiculos.carro.modelo);
+            setOriginalCarModel(data.veiculos.carro.modelo);
           }
           if (data && data.veiculos && data.veiculos.moto) {
             setMotoModel(data.veiculos.moto.modelo);
+            setOriginalMotoModel(data.veiculos.moto.modelo);
+          }
+          if (data && data.name) {
+            setName(data.name);
+            setOriginalName(data.name);
+          }
+          if (data && data.phoneNumber) {
+            setPhoneNumber(data.phoneNumber);
+            setOriginalPhoneNumber(data.phoneNumber);
           }
         }
       } catch (error) {
@@ -97,9 +110,9 @@ const PersonalInformation = () => {
       (inputType === "phoneNumber" && userData.phoneNumber !== "")
     ) {
       if (inputType === "name") {
-        return userData.name;
+        return originalName;
       } else {
-        return userData.phoneNumber;
+        return originalPhoneNumber;
       }
     }
   };
@@ -107,7 +120,9 @@ const PersonalInformation = () => {
   const updateUserData = async () => {
     try {
       if (user) {
-        await updateVehicleDataInFirestore(user.uid, carModel, motoModel);
+        if (carModel !== originalCarModel || motoModel !== originalMotoModel) {
+          await updateVehicleDataInFirestore(user.uid, carModel, motoModel);
+        }
 
         const updatedData = await readUserDataFromFirestore(user.uid);
         setUserData(updatedData);
@@ -118,10 +133,13 @@ const PersonalInformation = () => {
       console.error("Erro ao atualizar dados do usuário:", error.message);
     }
   };
+
   const updateUserDataPhoneAndNumber = async () => {
     try {
       if (user) {
-        await updatePhoneNumber(user.uid, name, phoneNumber);
+        if (name !== originalName || phoneNumber !== originalPhoneNumber) {
+          await updatePhoneNumber(user.uid, name, phoneNumber);
+        }
 
         const updatedData = await readUserDataFromFirestore(user.uid);
         setUserData(updatedData);
@@ -147,7 +165,7 @@ const PersonalInformation = () => {
         <HStack
           marginTop={15}
           width={"100%"}
-          height={120}
+          height={editModePerson ? 200 : 120}
           backgroundColor="#FFFFFF"
           borderRadius={15}
           alignItems="center"
@@ -169,10 +187,16 @@ const PersonalInformation = () => {
                   color="#FFFFFF"
                 />
               </Box>
-              <VStack height={104} width={"50%"} justifyContent="space-around">
+              <VStack
+                height={editModePerson ? "80%" : 104}
+                width={editModePerson ? "62%" : "50%"}
+                justifyContent={
+                  editModePerson ? "space-between" : "space-around"
+                }
+              >
                 <Heading color="#000000">Dados Pessoais</Heading>
                 {editModePerson ? (
-                  <VStack alignItems="center">
+                  <VStack alignItems="start">
                     <HStack
                       width={"100%"}
                       alignItems="center"
@@ -184,7 +208,7 @@ const PersonalInformation = () => {
                           value={name}
                           onChangeText={(text) => setName(text)}
                           placeholder={
-                            userData.name === "" ? "name" : userData.name
+                            userData.name === "" ? "Nome" : userData.name
                           }
                         />
                       </Input>
@@ -208,7 +232,7 @@ const PersonalInformation = () => {
                           onChangeText={(text) => setPhoneNumber(text)}
                           placeholder={
                             userData.phoneNumber === ""
-                              ? "moto"
+                              ? "Telefone"
                               : userData.phoneNumber
                           }
                           mask={Masks.BRL_PHONE}
@@ -221,6 +245,19 @@ const PersonalInformation = () => {
                         onPress={() => handleRemoveInputPerson("phoneNumber")}
                       />
                     </HStack>
+                    {editModePerson && (
+                      <>
+                        <Button
+                          onPress={updateUserDataPhoneAndNumber}
+                          justifyContent="space-around"
+                          height={35}
+                          width={"80%"}
+                        >
+                          <ButtonText>Atualizar dados</ButtonText>
+                          <FontAwesome6 name="check" size={28} color="white" />
+                        </Button>
+                      </>
+                    )}
                   </VStack>
                 ) : (
                   <>
@@ -235,24 +272,13 @@ const PersonalInformation = () => {
                   </>
                 )}
               </VStack>
-              <FontAwesome6
-                name="edit"
-                size={30}
-                color="black"
-                onPress={() => setEditModePerson(true)}
-              />
-              {editModePerson && (
-                <>
-                  <Button
-                    onPress={updateUserDataPhoneAndNumber}
-                    justifyContent="space-around"
-                    height={35}
-                    width={"80%"}
-                  >
-                    <ButtonText>Atualizar dados</ButtonText>
-                    <FontAwesome6 name="check" size={28} color="white" />
-                  </Button>
-                </>
+              {!editModePerson && (
+                <FontAwesome6
+                  name="edit"
+                  size={30}
+                  color="black"
+                  onPress={() => setEditModePerson(true)}
+                />
               )}
             </>
           ) : (

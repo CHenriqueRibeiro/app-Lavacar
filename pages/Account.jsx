@@ -409,7 +409,7 @@ export default function Scheduling() {
                   }}
                 >
                   <Ionicons name="chevron-back" size={20} color="#4D0288" />
-                  <ButtonText color="#4D0288">Voltar para login</ButtonText>
+                  <ButtonText color="#4D0288"  textDecorationLine="none">Voltar para login</ButtonText>
                 </Button>
               </HStack>
             </VStack>

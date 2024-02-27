@@ -1,21 +1,15 @@
-import {
-  Avatar,
-  AvatarFallbackText,
-  HStack,
-  Text,
-  VStack,
-} from "@gluestack-ui/themed";
-import { AntDesign } from "@expo/vector-icons";
+import { Button, HStack, Heading, Text, VStack } from "@gluestack-ui/themed";
+import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "../../context/LocationContext";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { FontAwesome6 } from "@expo/vector-icons";
 export default function Header() {
   const [location, setLocation] = useState(null);
   const { user } = useAuth();
-  const { handleUseMyLocation, userLocation, setUserLocation } = useLocation();
+  const { handleUseMyLocation, userLocation } = useLocation();
 
   useEffect(() => {
     const checkAsyncStorage = async () => {
@@ -33,60 +27,81 @@ export default function Header() {
     };
 
     checkAsyncStorage();
-  }, []); // Remova "location" das dependências para evitar loop infinito
+  }, []);
 
   useEffect(() => {
-    setLocation(userLocation); // Atualiza a localização quando userLocation muda
+    setLocation(userLocation);
   }, [userLocation]);
 
   const handleLocationButtonPress = async () => {
     console.log("Botão de Localização Pressionado!");
     const savedDataString = await AsyncStorage.getItem("userLocation");
-    console.log("0",savedDataString);
+    console.log("0", savedDataString);
 
-    await handleUseMyLocation(); // Aguarde a conclusão da atualização da localização
+    await handleUseMyLocation();
 
-    // Agora, você pode acessar a localização atualizada
     setLocation(userLocation);
   };
 
   return (
-    <HStack
+    <VStack
       bg="#4D0288"
       width={"100%"}
       height={120}
       alignItems="center"
       justifyContent="center"
     >
-      <HStack
+      <VStack
         width={"95%"}
         height={"60%"}
-        alignItems="center"
+        alignItems="start"
         justifyContent="space-between"
+        paddingLeft={8}
+        paddingTop={8}
       >
-        <Avatar bgColor="$white" size="md" borderRadius="$lg">
-          <AvatarFallbackText color="#4D0288">
-            {user === null ? "" : user.email}
-          </AvatarFallbackText>
-        </Avatar>
-        <VStack alignItems="center" gap={5}>
-          <Text fontSize={14} color="#FFFFFF">
-            Localização
-          </Text>
-          <HStack gap={5}>
-            <AntDesign name="down" size={20} color="#FFFFFF" />
+        <Heading color="white" fontWeight="400">
+          Olá,
+        </Heading>
+        <Heading
+          fontWeight="700"
+          fontSize={32}
+          height={"50%"}
+          color="white"
+          paddingTop={4}
+        >
+          {user === null ? "Faça seu login" : user.email}
+        </Heading>
+      </VStack>
+      <VStack
+        alignItems="start"
+        justifyContent="center"
+        width={"95%"}
+        height={"40%"}
+        paddingLeft={4}
+      >
+        <HStack
+          alignItems="center"
+          width={"100%"}
+          justifyContent="space-between"
+        >
+          <HStack width={"75%"} alignItems="center">
+            <Entypo name="location-pin" size={20} color="white" />
             <Text fontSize={20} color="#FFFFFF">
               {location}
             </Text>
           </HStack>
-        </VStack>
-        <Entypo
-          name="location"
-          size={24}
-          color="#FFFFFF"
-          onPress={handleLocationButtonPress}
-        />
-      </HStack>
-    </HStack>
+          <HStack width={"25%"}>
+            <Button alignItems="center" width={"100%"} backgroundColor="white">
+              <FontAwesome6
+                name="location-crosshairs"
+                size={24}
+                color="black"
+                onPress={handleLocationButtonPress}
+              />
+            </Button>
+          </HStack>
+        </HStack>
+      </VStack>
+    </VStack>
   );
 }

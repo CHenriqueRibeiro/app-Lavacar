@@ -13,7 +13,6 @@ export const LocationProvider = ({ children }) => {
 
   const handleUseMyLocation = async () => {
     setLoadingLocation(true);
-    console.log("localizacao e essa (3)", userLocation);
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -53,8 +52,6 @@ export const LocationProvider = ({ children }) => {
       setCity(city);
       setLoadingLocation(false);
       setErrorMsg(null);
-      console.log("localizacao atual e: (4)", userLocation);
-      console.log("ta salvando isso no assync (5)", combinedData);
     } catch (error) {
       console.error("Erro na geocodificação reversa:", error);
       setErrorMsg("Erro na geocodificação reversa");

@@ -6,14 +6,14 @@ import Date from "../../Time/Date";
 import "moment/locale/pt-br";
 import DiagonalTimeline from "../Hours/Hours";
 import { VStack, View } from "@gluestack-ui/themed";
-import { FirebaseProvider } from "../../context/FirebaseContext";
+import { FirebaseProvider, useFirebase } from "../../context/FirebaseContext";
 
 const Calendar = ({ onSelectDate, selected }) => {
   const [dates, setDates] = useState([]);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [currentMonth, setCurrentMonth] = useState();
   const [selectedHour, setSelectedHour] = useState(null);
-  /*const {
+  const {
     horarioReservado,
     servicoEscolhido,
     agendamento,
@@ -21,7 +21,7 @@ const Calendar = ({ onSelectDate, selected }) => {
     showActionsheet,
     handleClose,
     setDataSelecionada,
-  } = useFirebase();*/
+  } = useFirebase();
 
   moment.locale("pt-br");
 
@@ -37,6 +37,12 @@ const Calendar = ({ onSelectDate, selected }) => {
   useEffect(() => {
     getDates();
   }, []);
+
+  useEffect(() => {
+    if (dates.length > 0) {
+      setDataSelecionada(dates[0]);
+    }
+  }, [dates]);
 
   const getCurrentMonth = () => {
     const month = moment(dates[0])
@@ -89,21 +95,15 @@ const Calendar = ({ onSelectDate, selected }) => {
               marginRight: 10,
             }}
           >
-            {dates.map((date, index) => {
-              if (selected) {
-                //  setDataSelecionada(date)
-              }
-
-              return (
-                <Date
-                  key={index}
-                  date={date}
-                  onSelectDate={onSelectDate}
-                  selected={selected}
-                  isToday={index === 0}
-                />
-              );
-            })}
+            {dates.map((date, index) => (
+              <Date
+                key={index}
+                date={date}
+                onSelectDate={onSelectDate}
+                selected={selected}
+                isToday={index === 0}
+              />
+            ))}
           </ScrollView>
           <ScrollView
             horizontal

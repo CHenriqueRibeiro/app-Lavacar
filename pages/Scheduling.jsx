@@ -107,7 +107,11 @@ export default function SchedulingComponent() {
                   alignItems="center"
                 >
                   <Ionicons name="chevron-back" size={25} color="#4D0288" />
-                  <ButtonText color="#4D0288" fontSize={18}>
+                  <ButtonText
+                    color="#4D0288"
+                    fontSize={18}
+                    textDecorationLine="none"
+                  >
                     Voltar
                   </ButtonText>
                 </Button>

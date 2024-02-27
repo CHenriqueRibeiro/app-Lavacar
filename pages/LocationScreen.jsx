@@ -26,13 +26,14 @@ export default function LocationScreen() {
   const [suggestions, setSuggestions] = useState([]);
   const [isContinueButtonDisabled, setContinueButtonDisabled] = useState(true);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
-  const [locationFilledByButton, setLocationFilledByButton] = useState(false);
-
   const navigation = useNavigation();
 
   const handleContinue = async () => {
     if (selectedSuggestion) {
-      await reverseGeocode(selectedSuggestion.geometry.lat, selectedSuggestion.geometry.lng);
+      await reverseGeocode(
+        selectedSuggestion.geometry.lat,
+        selectedSuggestion.geometry.lng
+      );
       navigation.navigate("CustomTabs");
     } else {
       alert("Por favor, escolha uma sugestão válida.");
@@ -71,14 +72,14 @@ export default function LocationScreen() {
 
   const handleInputChange = (text) => {
     setUserLocation(text);
-    setContinueButtonDisabled(true); 
+    setContinueButtonDisabled(true);
     getAutocompleteSuggestions(text);
   };
 
   const handleSuggestionPress = (suggestion) => {
     setUserLocation(`${suggestion.suburb || ""}, ${suggestion.city || ""}`);
     setSelectedSuggestion(suggestion);
-    setContinueButtonDisabled(false); 
+    setContinueButtonDisabled(false);
     setSuggestions([]);
   };
 

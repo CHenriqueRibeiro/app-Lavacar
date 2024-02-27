@@ -14,23 +14,23 @@ export const FirebaseProvider = ({ children }) => {
   const [showActionsheet, setShowActionsheet] = useState(false);
   const handleClose = () => setShowActionsheet(!showActionsheet);
   useEffect(() => {
-    // const fetchData = async () => {
-    //   const docRef = doc(db, "Estabelecimentos", "Empresa 1");
-    //   try {
-    //     const docSnap = await getDoc(docRef);
-    //     // const horarioReservadoData = docSnap.data().HorarioReservado || {};
-    //     // const horariosDisponiveisData = docSnap.data().Horarios || [];
-    //     if (docSnap.exists()) {
-    //       setHorarioReservado(docSnap.data().HorarioReservado || {});
-    //       setHorariosDisponiveis(docSnap.data().Horarios || []);
-    //     } else {
-    //       console.log("Nao tem documento!");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error getting document:", error);
-    //   }
-    // };
-    // fetchData();
+    const fetchData = async () => {
+      const docRef = doc(db, "Estabelecimentos", "Empresa 1");
+      try {
+        const docSnap = await getDoc(docRef);
+        // const horarioReservadoData = docSnap.data().HorarioReservado || {};
+        // const horariosDisponiveisData = docSnap.data().Horarios || [];
+        if (docSnap.exists()) {
+          setHorarioReservado(docSnap.data().HorarioReservado || {});
+          setHorariosDisponiveis(docSnap.data().Horarios || []);
+        } else {
+          console.log("Nao tem documento!");
+        }
+      } catch (error) {
+        console.error("Error getting document:", error);
+      }
+    };
+    fetchData();
   }, []);
 
   const fetchData = async () => {
@@ -38,8 +38,8 @@ export const FirebaseProvider = ({ children }) => {
 
     try {
       const docSnap = await getDoc(docRef);
-      // const horarioReservadoData = docSnap.data().HorarioReservado || {};
-      // const horariosDisponiveisData = docSnap.data().Horarios || [];
+      const horarioReservadoData = docSnap.data().HorarioReservado || {};
+      const horariosDisponiveisData = docSnap.data().Horarios || [];
 
       if (docSnap.exists()) {
         setHorarioReservado(docSnap.data().HorarioReservado || {});
@@ -96,16 +96,14 @@ export const FirebaseProvider = ({ children }) => {
     fetchData();
 
     handleClose();
-    //   const dataAgendamento = await AsyncStorage.getItem("dataAgendamento");
+    const dataAgendamento = await AsyncStorage.getItem("dataAgendamento");
 
-    //   if (dataAgendamento !== null) {
-    //     console.log("Data agendada:", JSON.parse(dataAgendamento));
-    //   } else {
-    //     console.log("Nenhum agendamento encontrado.");
-    //   } handleClose();
-    // } catch (error) {
-    //   console.error("Erro ao ler agendamento:", error);
-    // }
+    if (dataAgendamento !== null) {
+      console.log("Data agendada:", JSON.parse(dataAgendamento));
+    } else {
+      console.log("Nenhum agendamento encontrado.");
+    }
+    handleClose();
   };
 
   return (

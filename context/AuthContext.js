@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { firebaseAuth } from "../Config/Firebase";
+import { db, firebaseAuth } from "../Config/Firebase";
 import {
   signInWithEmailAndPassword,
   signOut,
@@ -17,12 +17,11 @@ export const AuthProvider = ({ children }) => {
     name: "",
     phoneNumber: "",
   });
+
   const [userDataLoaded, setUserDataLoaded] = useState(false);
 
   useEffect(() => {
     const unsubscribe = firebaseAuth.onAuthStateChanged((authUser) => {
-      console.log("antes", firebaseAuth.currentUser);
-
       setUser(firebaseAuth.currentUser);
       setLoading(false);
     });
@@ -220,7 +219,7 @@ export const AuthProvider = ({ children }) => {
     updatePhoneNumber,
     readUserDataFromFirestore,
     updateVehicleDataInFirestore,
-    personalData
+    personalData,
   };
 
   return (

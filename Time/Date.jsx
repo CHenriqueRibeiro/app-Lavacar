@@ -16,20 +16,7 @@ const Date = ({ date, onSelectDate, selected }) => {
   const isSelected = selected === fullDate || (isToday && !selected);
 
   const handleDateSelection = async () => {
-    try {
-      const empresaDocRef = doc(db, "Estabelecimentos", "Empresa 1");
-      await updateDoc(empresaDocRef, {
-        HorarioReservado: {
-          Cliente: "testeNome",
-          Data: fullDate,
-          Hora: "",
-        },
-      });
-
-      onSelectDate(fullDate);
-    } catch (error) {
-      console.error("Erro ao adicionar data ao Firestore:", error);
-    }
+    onSelectDate(fullDate);
   };
 
   return (

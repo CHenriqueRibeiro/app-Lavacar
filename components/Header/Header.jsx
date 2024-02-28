@@ -64,10 +64,10 @@ export default function Header() {
         </Heading>
         <Heading
           fontWeight="700"
-          fontSize={32}
+          fontSize={26}
           height={"50%"}
           color="white"
-          paddingTop={4}
+          paddingTop={1}
         >
           {user === null ? "Faça seu login" : user.email}
         </Heading>
@@ -86,7 +86,7 @@ export default function Header() {
         >
           <HStack width={"75%"} alignItems="center">
             <Entypo name="location-pin" size={20} color="white" />
-            <Text fontSize={20} color="#FFFFFF">
+            <Text fontSize={18} color="#FFFFFF">
               {location}
             </Text>
           </HStack>

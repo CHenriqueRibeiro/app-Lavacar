@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "../Config/Firebase";
-import { onLog } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "@firebase/auth";
 
 const FirebaseContext = createContext();
 
@@ -12,14 +12,16 @@ export const FirebaseProvider = ({ children }) => {
   const [servicoSelecionado, setServicoSelecionado] = useState({});
   const [dataSelecionada, setDataSelecionada] = useState();
   const [showActionsheet, setShowActionsheet] = useState(false);
+  const [telefone, setTelefone] = useState("");
   const handleClose = () => setShowActionsheet(!showActionsheet);
   useEffect(() => {
     const fetchData = async () => {
       const docRef = doc(db, "Estabelecimentos", "Empresa 1");
       try {
         const docSnap = await getDoc(docRef);
-        // const horarioReservadoData = docSnap.data().HorarioReservado || {};
-        // const horariosDisponiveisData = docSnap.data().Horarios || [];
+
+        setTelefone(docSnap.data().DadosDaEmpresa.Telefone);
+
         if (docSnap.exists()) {
           setHorarioReservado(docSnap.data().HorarioReservado || {});
           setHorariosDisponiveis(docSnap.data().Horarios || []);
@@ -38,25 +40,12 @@ export const FirebaseProvider = ({ children }) => {
 
     try {
       const docSnap = await getDoc(docRef);
-      const horarioReservadoData = docSnap.data().HorarioReservado || {};
-      const horariosDisponiveisData = docSnap.data().Horarios || [];
-
       if (docSnap.exists()) {
         setHorarioReservado(docSnap.data().HorarioReservado || {});
         setHorariosDisponiveis(docSnap.data().Horarios || []);
       }
     } catch (error) {
       console.error("Error getting document:", error);
-    }
-  };
-
-  const updateHorarioReservado = async (updatedData) => {
-    try {
-      const docRef = doc(db, "Estabelecimentos", "Empresa 1");
-      await updateDoc(docRef, { HorarioReservado: updatedData });
-      setHorarioReservado(updatedData);
-    } catch (error) {
-      console.error("Error updating HorarioReservado:", error);
     }
   };
 
@@ -73,7 +62,7 @@ export const FirebaseProvider = ({ children }) => {
     try {
       const docRef = doc(db, "Estabelecimentos", "Empresa 1");
       await updateDoc(docRef, { HorarioReservado: updatedData });
-      setServicoSelecionado(servicoSelecionado);
+      setServicoSelecionado(updatedData);
     } catch (error) {
       console.error("Error updating ServicoEscolhido:", error);
     }
@@ -105,13 +94,89 @@ export const FirebaseProvider = ({ children }) => {
     }
     handleClose();
   };
+  const sendAgendamentoToFirestore = async () => {
+    try {
+      const agendamentoData = await AsyncStorage.getItem("agendamento");
+      const agendamento = JSON.parse(agendamentoData);
+
+      if (agendamento && agendamento.data && agendamento.servico) {
+        const auth = getAuth();
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            const uid = user.uid;
+            const estabelecimentoDocRef = doc(
+              db,
+              "Estabelecimentos",
+              "Empresa 1"
+            );
+            const estabelecimentoDocSnap = await getDoc(estabelecimentoDocRef);
+            const agendamentosEstabelecimento = estabelecimentoDocSnap.exists()
+              ? estabelecimentoDocSnap.data().Agendamentos || []
+              : [];
+
+            const updatedAgendamentosEstabelecimento = [
+              ...agendamentosEstabelecimento,
+              {
+                ...agendamento,
+                servicoRealizado: false,
+                servicoCancelado: false,
+              },
+            ];
+
+            await updateDoc(estabelecimentoDocRef, {
+              Agendamentos: updatedAgendamentosEstabelecimento,
+            });
+
+            console.log(
+              "Dados do agendamento enviados para o Firestore (Estabelecimento):",
+              agendamento
+            );
+
+            const usuarioDocRef = doc(db, "Usuarios", uid);
+            const usuarioDocSnap = await getDoc(usuarioDocRef);
+            const agendamentosUsuario = usuarioDocSnap.exists()
+              ? usuarioDocSnap.data().Agendamentos || []
+              : [];
+
+            const updatedAgendamentosUsuario = [
+              ...agendamentosUsuario,
+              {
+                ...agendamento,
+                servicoRealizado: false,
+                servicoCancelado: false,
+              },
+            ];
+
+            await updateDoc(usuarioDocRef, {
+              Agendamentos: updatedAgendamentosUsuario,
+            });
+
+            console.log(
+              "Dados do agendamento enviados para o Firestore (Usuário):",
+              agendamento
+            );
+
+            await AsyncStorage.removeItem("agendamento");
+          } else {
+            console.warn("Usuário não autenticado.");
+          }
+        });
+      } else {
+        console.warn("Dados de agendamento inválidos ou ausentes.");
+      }
+    } catch (error) {
+      console.error(
+        "Erro ao enviar dados de agendamento para o Firestore:",
+        error.message
+      );
+    }
+  };
 
   return (
     <FirebaseContext.Provider
       value={{
         horarioReservado,
         horariosDisponiveis,
-        updateHorarioReservado,
         updateHorariosDisponiveis,
         servicoEscolhido,
         agendamento,
@@ -119,6 +184,8 @@ export const FirebaseProvider = ({ children }) => {
         showActionsheet,
         handleClose,
         setDataSelecionada,
+        sendAgendamentoToFirestore,
+        telefone,
       }}
     >
       {children}

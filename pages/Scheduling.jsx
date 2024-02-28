@@ -4,6 +4,7 @@ import {
   Heading,
   ModalContent,
   ModalHeader,
+  ScrollView,
   VStack,
   View,
 } from "@gluestack-ui/themed";
@@ -23,7 +24,7 @@ import { useEffect, useState } from "react";
 
 export default function SchedulingComponent() {
   const [showModal, setShowModal] = useState(false);
-  const { horarioReservado } = useFirebase();
+
   const navigation = useNavigation();
   console.log(firebaseAuth.currentUser);
 
@@ -72,8 +73,11 @@ export default function SchedulingComponent() {
           </TouchableOpacity>
           <Heading color="#FFFFFF">Agendamentos</Heading>
         </HStack>
-        {firebaseAuth.currentUser &&
-          Object.keys(horarioReservado).length > 0 && <AppointmentCard />}
+        <ScrollView width={"100%"}>
+          <View style={{ alignItems: "center", paddingBottom: 98 }}>
+            {firebaseAuth.currentUser && <AppointmentCard />}
+          </View>
+        </ScrollView>
       </View>
       <Modal
         isOpen={showModal}

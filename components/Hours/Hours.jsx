@@ -2,6 +2,7 @@ import { Text, View } from "@gluestack-ui/themed";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { useFirebase } from "../../context/FirebaseContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DiagonalTimeline = ({ onSelectHour }) => {
   const { horarioReservado, horariosDisponiveis, updateHorarioReservado } =
@@ -9,15 +10,37 @@ const DiagonalTimeline = ({ onSelectHour }) => {
   const [selectedHour, setSelectedHour] = useState(horarioReservado.Hora || "");
 
   const handleHourSelection = async (hour) => {
-    if (horarioReservado.Hora === hour.Hora) {
-    } else if (horariosDisponiveis.includes(hour.Hora)) {
-      await updateHorarioReservado({ ...horarioReservado, Hora: hour.Hora });
+    if (horarioReservado.Hora === hour) {
+    } else if (horariosDisponiveis.includes(hour)) {
+      saveHourToAsyncStorage(hour);
 
+      
       setSelectedHour(hour);
       onSelectHour(hour);
     }
   };
 
+  const saveHourToAsyncStorage = async (hora) => {
+    try {
+      const agendamentoData = await AsyncStorage.getItem("agendamento");
+
+      let agendamento = {};
+      if (agendamentoData) {
+        agendamento = JSON.parse(agendamentoData);
+      }
+
+      agendamento = { ...agendamento, hora };
+
+      await AsyncStorage.setItem("agendamento", JSON.stringify(agendamento));
+    } catch (error) {
+      console.error(
+        "Erro ao salvar hora do agendamento no AsyncStorage:",
+        error.message
+      );
+    }
+  };
+
+  console.log("Horário Selecionado:", horariosDisponiveis);
   const renderTimeline = () => {
     const hours = Array.from(horariosDisponiveis);
 

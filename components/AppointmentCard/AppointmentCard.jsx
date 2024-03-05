@@ -9,9 +9,9 @@ import {
   View,
 } from "@gluestack-ui/themed";
 import { useAuth } from "../../context/AuthContext";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../Config/Firebase";
-import ContentLoader, { Rect } from "react-content-loader/native";
+//import ContentLoader, { Rect } from "react-content-loader/native";
 import { Linking, useWindowDimensions } from "react-native";
 import {
   MaterialCommunityIcons,
@@ -24,24 +24,21 @@ import {
 export default function AppointmentCard() {
   const { user } = useAuth();
   const [agendamentos, setAgendamentos] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadUserScheduling = async () => {
-      try {
-        const userId = user.uid;
-        const userDocRef = doc(db, "Usuarios", userId);
-        const userDocSnap = await getDoc(userDocRef);
+      const userId = user.uid;
+      const userDocRef = doc(db, "Usuarios", userId);
 
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          console.log({ userData });
+      const unsubscribe = onSnapshot(userDocRef, (doc) => {
+        if (doc.exists()) {
+          const userData = doc.data();
+
           if (
             userData.Agendamentos &&
             Array.isArray(userData.Agendamentos) &&
             userData.Agendamentos.length > 0
           ) {
-            console.log(userData.Agendamentos);
             setAgendamentos(userData.Agendamentos);
           } else {
             console.warn(
@@ -51,13 +48,13 @@ export default function AppointmentCard() {
         } else {
           console.warn("Usuário não encontrado no Firestore");
         }
-      } catch (error) {
-        console.error("Erro ao buscar veículos do usuário:", error.message);
-      }
+      });
+
+      return () => unsubscribe();
     };
 
     loadUserScheduling();
-  }, [user.uid]);
+  }, [user]);
 
   const handleWhatsApp = () => {
     const phoneNumber = "85985847007";
@@ -74,7 +71,7 @@ export default function AppointmentCard() {
       .catch((error) => console.error("Erro ao abrir o WhatsApp:", error));
   };
 
-  if (loading) {
+  /*if (loading) {
     const { width } = useWindowDimensions();
     const skeletonCount = 3;
     return (
@@ -104,7 +101,7 @@ export default function AppointmentCard() {
         ))}
       </>
     );
-  }
+  }*/
 
   if (agendamentos === undefined || agendamentos.length === 0) {
     return (

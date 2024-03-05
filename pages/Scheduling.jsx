@@ -76,12 +76,7 @@ export default function SchedulingComponent() {
           </View>
         </ScrollView>
       </View>
-      <Modal
-        isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-      >
+      <Modal isOpen={showModal}>
         <ModalBackdrop />
         <ModalContent>
           <ModalHeader borderBottomWidth="$0">

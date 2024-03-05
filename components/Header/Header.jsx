@@ -1,11 +1,11 @@
-import { Button, HStack, Heading, Text, VStack } from "@gluestack-ui/themed";
-import { Ionicons } from "@expo/vector-icons";
+import { HStack, Heading, Text, VStack } from "@gluestack-ui/themed";
 import { Entypo } from "@expo/vector-icons";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "../../context/LocationContext";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 export default function Header() {
   const [location, setLocation] = useState(null);
   const { user } = useAuth();
@@ -34,12 +34,7 @@ export default function Header() {
   }, [userLocation]);
 
   const handleLocationButtonPress = async () => {
-    console.log("Botão de Localização Pressionado!");
-    const savedDataString = await AsyncStorage.getItem("userLocation");
-    console.log("0", savedDataString);
-
     await handleUseMyLocation();
-
     setLocation(userLocation);
   };
 
@@ -84,22 +79,23 @@ export default function Header() {
           width={"100%"}
           justifyContent="space-between"
         >
-          <HStack width={"75%"} alignItems="center">
+          <HStack width={"65%"} alignItems="center">
             <Entypo name="location-pin" size={20} color="white" />
             <Text fontSize={18} color="#FFFFFF">
               {location}
             </Text>
           </HStack>
-          <HStack width={"25%"}>
-            <Button alignItems="center" width={"100%"} backgroundColor="white">
-              <FontAwesome6
-                name="location-crosshairs"
-                size={24}
-                color="black"
-                onPress={handleLocationButtonPress}
-              />
-            </Button>
-          </HStack>
+          <TouchableOpacity
+            onPress={handleLocationButtonPress}
+            style={{
+              width: "35%",
+            }}
+          >
+            <HStack width={"100%"} alignItems="center" gap={15}>
+              <Ionicons name="reload-circle" size={24} color="#FFFFFF" />
+              <Text color="#FFFFFF">Atualizar</Text>
+            </HStack>
+          </TouchableOpacity>
         </HStack>
       </VStack>
     </VStack>

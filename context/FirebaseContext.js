@@ -9,8 +9,8 @@ const FirebaseContext = createContext();
 export const FirebaseProvider = ({ children }) => {
   const [horarioReservado, setHorarioReservado] = useState({});
   const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
-  const [servicoSelecionado, setServicoSelecionado] = useState({});
-  const [dataSelecionada, setDataSelecionada] = useState();
+  const [, setServicoSelecionado] = useState({});
+  const [, setDataSelecionada] = useState();
   const [showActionsheet, setShowActionsheet] = useState(false);
   const [telefone, setTelefone] = useState("");
   const handleClose = () => setShowActionsheet(!showActionsheet);
@@ -96,7 +96,6 @@ export const FirebaseProvider = ({ children }) => {
       const agendamentoData = await AsyncStorage.getItem("agendamento");
       const agendamento = JSON.parse(agendamentoData);
       if (agendamento && agendamento.data && agendamento.servico) {
-        console.log("tem isso no agendamento", agendamento);
         const auth = getAuth();
         const user = auth.currentUser;
 

@@ -29,7 +29,7 @@ const Date = ({ date, onSelectDate, selected }) => {
       ]}
     >
       <Text style={[styles.big, isSelected && { color: "#fff" }]}>{day}</Text>
-      <View style={{ height: 10 }} />
+      <View style={{ height: 25 }} />
       <Text
         style={[
           styles.medium,
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 5,
-    height: 90,
-    width: 80,
+    height: 110,
+    width: 95,
     marginHorizontal: 5,
   },
   big: {

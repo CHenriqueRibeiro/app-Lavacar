@@ -10,7 +10,6 @@ import {
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import AppointmentCard from "../components/AppointmentCard/AppointmentCard";
-import { useFirebase } from "../context/FirebaseContext";
 import { StatusBar } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
@@ -24,9 +23,7 @@ import { useEffect, useState } from "react";
 
 export default function SchedulingComponent() {
   const [showModal, setShowModal] = useState(false);
-
   const navigation = useNavigation();
-  console.log(firebaseAuth.currentUser);
 
   const checkUserStatus = () => {
     if (!firebaseAuth.currentUser) {

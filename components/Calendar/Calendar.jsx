@@ -13,15 +13,7 @@ const Calendar = ({ onSelectDate, selected }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [currentMonth, setCurrentMonth] = useState();
   const [selectedHour, setSelectedHour] = useState(null);
-  const {
-    horarioReservado,
-    servicoEscolhido,
-    agendamento,
-    lerAgendamento,
-    showActionsheet,
-    handleClose,
-    setDataSelecionada,
-  } = useFirebase();
+  const { setDataSelecionada } = useFirebase();
 
   moment.locale("pt-br");
 
@@ -62,55 +54,64 @@ const Calendar = ({ onSelectDate, selected }) => {
   return (
     <>
       <FirebaseProvider>
-        <View>
-          <Text
-            style={{
-              textAlign: "center",
-              textTransform: "capitalize",
-              fontSize: 22,
-              fontWeight: "bold",
-              marginTop: 15,
-              marginBottom: 15,
-            }}
-          >
-            {currentMonth}
-          </Text>
-        </View>
         <VStack
           style={{
             width: "100%",
-            height: 350,
-            paddingBottom: 20,
           }}
         >
+          <View height={"20%"} justifyContent="center">
+            <Text
+              style={{
+                textAlign: "center",
+                textTransform: "capitalize",
+                fontSize: 28,
+                fontWeight: "bold",
+              }}
+            >
+              {currentMonth}
+            </Text>
+          </View>
+
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
             onScroll={(e) => setScrollPosition(e.nativeEvent.contentOffset.x)}
-            style={{
-              height: 10,
-              marginBottom: 5,
-              marginLeft: 10,
-              marginRight: 10,
-            }}
           >
-            {dates.map((date, index) => (
-              <Date
-                key={index}
-                date={date}
-                onSelectDate={onSelectDate}
-                selected={selected}
-                isToday={index === 0}
-              />
-            ))}
+            <View
+              style={{
+                flexDirection: "row",
+                height: "80%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {dates.map((date, index) => (
+                <Date
+                  key={index}
+                  date={date}
+                  onSelectDate={onSelectDate}
+                  selected={selected}
+                  isToday={index === 0}
+                />
+              ))}
+            </View>
           </ScrollView>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ height: 10, marginBottom: 5 }}
+            height={"10%"}
           >
-            <DiagonalTimeline onSelectHour={handleHourSelection} />
+            <View
+              style={{
+                height: "80%",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingRight:5
+              }}
+            >
+              <DiagonalTimeline onSelectHour={handleHourSelection} />
+            </View>
           </ScrollView>
         </VStack>
       </FirebaseProvider>

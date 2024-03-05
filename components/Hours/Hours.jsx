@@ -5,19 +5,14 @@ import { useFirebase } from "../../context/FirebaseContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DiagonalTimeline = ({ onSelectHour }) => {
-  const { horarioReservado, horariosDisponiveis, updateHorarioReservado } =
-    useFirebase();
-  const [selectedHour, setSelectedHour] = useState(horarioReservado.Hora || "");
+  const { horariosDisponiveis } = useFirebase();
+  const [selectedHour, setSelectedHour] = useState("");
 
   const handleHourSelection = async (hour) => {
-    if (horarioReservado.Hora === hour) {
-    } else if (horariosDisponiveis.includes(hour)) {
-      saveHourToAsyncStorage(hour);
+    saveHourToAsyncStorage(hour);
 
-      
-      setSelectedHour(hour);
-      onSelectHour(hour);
-    }
+    setSelectedHour(hour);
+    onSelectHour(hour);
   };
 
   const saveHourToAsyncStorage = async (hora) => {
@@ -40,7 +35,6 @@ const DiagonalTimeline = ({ onSelectHour }) => {
     }
   };
 
-  console.log("Horário Selecionado:", horariosDisponiveis);
   const renderTimeline = () => {
     const hours = Array.from(horariosDisponiveis);
 
@@ -49,10 +43,10 @@ const DiagonalTimeline = ({ onSelectHour }) => {
         key={index}
         onPress={() => handleHourSelection(hour)}
         style={{
-          width: 70,
+          width: 95,
           height: "100%",
           backgroundColor: selectedHour === hour ? "#4D0288" : "#eee",
-          borderRadius: 5,
+          borderRadius: 10,
           alignItems: "center",
           justifyContent: "center",
           marginLeft: 8,

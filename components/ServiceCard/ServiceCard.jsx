@@ -36,6 +36,8 @@ const ServiceCard = ({ servicos }) => {
   const [moto, setMoto] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [isDataSaved, setIsDataSaved] = useState(false);
+  const [empresaName, setEmpresaName] = useState("");
+
   useEffect(() => {
     const loadUserVehicles = async () => {
       try {
@@ -45,9 +47,6 @@ const ServiceCard = ({ servicos }) => {
 
         if (userDocSnap.exists()) {
           const userData = userDocSnap.data();
-          const userVehicles = [userData.carModel, userData.motoModel].filter(
-            Boolean
-          );
           setCar(userData.carModel);
           setMoto(userData.motoModel);
         } else {
@@ -57,8 +56,26 @@ const ServiceCard = ({ servicos }) => {
         console.error("Erro ao buscar veículos do usuário:", error.message);
       }
     };
+
+    const loadEmpresaData = async () => {
+      try {
+        const empresaDocRef = doc(db, "Estabelecimentos", "Empresa 1");
+        const empresaDocSnap = await getDoc(empresaDocRef);
+
+        if (empresaDocSnap.exists()) {
+          const empresaData = empresaDocSnap.data();
+          setEmpresaName(empresaData.NomeDaEmpresa);
+        } else {
+          console.warn("Empresa não encontrada no Firestore");
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados da empresa:", error.message);
+      }
+    };
+
     loadUserVehicles();
-  }, []);
+    loadEmpresaData();
+  }, [user]);
 
   const handleAgendamento = (nomeServico) => {
     setSelectedService(nomeServico);
@@ -83,7 +100,13 @@ const ServiceCard = ({ servicos }) => {
       if (agendamentoData) {
         agendamento = JSON.parse(agendamentoData);
       }
-      agendamento = { ...agendamento, ...data };
+
+      // Inclua o nome da empresa nos dados do agendamento
+      agendamento = {
+        ...agendamento,
+        ...data,
+        empresaName: empresaName,
+      };
 
       await AsyncStorage.setItem("agendamento", JSON.stringify(agendamento));
 
@@ -117,15 +140,13 @@ const ServiceCard = ({ servicos }) => {
   return (
     <ScrollView vertical width={"100%"}>
       {Object.entries(servicos).map(([nomeServico, valorServico]) => {
-        const isSelected = nomeServico === selectedService;
-
         return (
           <View
             key={nomeServico}
             height={140}
             width={"100%"}
             marginBottom={12}
-            backgroundColor={isSelected ? "#F5F5F5" : "#FFFFFF"}
+            backgroundColor={"#FFFFFF"}
             borderRadius={15}
           >
             <HStack
@@ -135,7 +156,7 @@ const ServiceCard = ({ servicos }) => {
               justifyContent="space-around"
             >
               <Box
-                backgroundColor={isSelected ? "#6754A4" : "#4D0288"}
+                backgroundColor={"#4D0288"}
                 height={"75%"}
                 width={"25%"}
                 alignItems="center"
@@ -152,6 +173,7 @@ const ServiceCard = ({ servicos }) => {
               <VStack
                 alignItems="start"
                 height={"75%"}
+                width={"60%"}
                 justifyContent="space-between"
               >
                 <Heading>{nomeServico}</Heading>
@@ -163,36 +185,56 @@ const ServiceCard = ({ servicos }) => {
               </VStack>
             </HStack>
             <ActionSheet ref={actionSheetRef}>
-              <View alignItems="center">
+              <View
+                alignItems="center"
+                height={500}
+                justifyContent="space-between"
+              >
                 <Calendar
                   onSelectDate={(date) => handleDateSelection(date)}
                   selected={selectedDate}
                 />
-                <View>
-                  <Heading>Escolha seu veículo</Heading>
-                  <RadioGroup onChange={(value) => setSelectedVehicle(value)}>
-                    <Radio
-                      value={car}
-                      size="md"
-                      isInvalid={false}
-                      isDisabled={false}
-                    >
-                      <RadioIndicator mr="$2">
-                        <RadioIcon as={CircleIcon} strokeWidth={1} />
-                      </RadioIndicator>
-                      <RadioLabel>{car}</RadioLabel>
-                    </Radio>
-                    <Radio
-                      value={moto}
-                      size="md"
-                      isInvalid={false}
-                      isDisabled={false}
-                    >
-                      <RadioIndicator mr="$2">
-                        <RadioIcon as={CircleIcon} strokeWidth={1} />
-                      </RadioIndicator>
-                      <RadioLabel>{moto}</RadioLabel>
-                    </Radio>
+                <View height={"25%"} width={"95%"}>
+                  <Heading fontSize={26}>Escolha seu veículo: </Heading>
+                  <RadioGroup
+                    onChange={(value) => setSelectedVehicle(value)}
+                    height={"75%"}
+                    justifyContent="space-around"
+                  >
+                    {car === null || car == undefined || car == "" ? (
+                      <Box display="none"></Box>
+                    ) : (
+                      <>
+                        <Radio
+                          value={car}
+                          size="md"
+                          isInvalid={false}
+                          isDisabled={false}
+                        >
+                          <RadioIndicator mr="$2">
+                            <RadioIcon as={CircleIcon} strokeWidth={1} />
+                          </RadioIndicator>
+                          <RadioLabel fontSize={18}>{car}</RadioLabel>
+                        </Radio>
+                      </>
+                    )}
+                    {moto === null || moto == undefined || moto == "" ? (
+                      <Box display="none"></Box>
+                    ) : (
+                      <>
+                        <Radio
+                          value={moto}
+                          size="md"
+                          isInvalid={false}
+                          isDisabled={false}
+                        >
+                          <RadioIndicator mr="$2">
+                            <RadioIcon as={CircleIcon} strokeWidth={1} />
+                          </RadioIndicator>
+                          <RadioLabel fontSize={18}>{moto}</RadioLabel>
+                        </Radio>
+                      </>
+                    )}
                   </RadioGroup>
                 </View>
                 <Button

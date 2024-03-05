@@ -39,9 +39,9 @@ O **LavaJá** é uma aplicação móvel que permite aos usuários:
 Em breve será lancado na play store
 
 
-## Desenvolvedores
+## Desenvolvedor
 
-- [Henrique](#) - Desenvolvedor Principal
+- [Henrique] - Desenvolvedor Principal
 
 
 ---

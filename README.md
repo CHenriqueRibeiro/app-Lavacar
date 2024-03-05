@@ -41,7 +41,7 @@ Em breve será lancado na play store
 
 ## Desenvolvedor
 
-- [Henrique] - Desenvolvedor Principal
+- Henrique - Desenvolvedor Principal
 
 
 ---

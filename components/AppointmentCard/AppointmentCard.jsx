@@ -9,7 +9,7 @@ import {
   View,
 } from "@gluestack-ui/themed";
 import { useAuth } from "../../context/AuthContext";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../Config/Firebase";
 //import ContentLoader, { Rect } from "react-content-loader/native";
 import { Linking, useWindowDimensions } from "react-native";
@@ -56,19 +56,15 @@ export default function AppointmentCard() {
     loadUserScheduling();
   }, [user]);
 
-  const handleWhatsApp = () => {
+  const handleWhatsApp = async () => {
     const phoneNumber = "85985847007";
     const whatsappUrl = `whatsapp://send?phone=+55${phoneNumber}`;
 
-    Linking.canOpenURL(whatsappUrl)
-      .then((supported) => {
-        if (supported) {
-          return Linking.openURL(whatsappUrl);
-        } else {
-          console.warn("WhatsApp não está instalado no dispositivo.");
-        }
-      })
-      .catch((error) => console.error("Erro ao abrir o WhatsApp:", error));
+    try {
+      await Linking.openURL(whatsappUrl);
+    } catch (error) {
+      console.error("Erro ao abrir o WhatsApp:", error);
+    }
   };
 
   /*if (loading) {
@@ -191,7 +187,7 @@ export default function AppointmentCard() {
                     {agendamento.data} - {agendamento.hora}
                   </Text>
                 </HStack>
-                <Button
+                {/*<Button
                   alignItems="center"
                   backgroundColor="$error700"
                   gap={15}
@@ -204,7 +200,7 @@ export default function AppointmentCard() {
                 >
                   <MaterialIcons name="cancel" size={20} color="white" />
                   <ButtonText>Cancelar</ButtonText>
-                </Button>
+                </Button>*/}
                 <Button
                   alignItems="center"
                   backgroundColor="#00A884"

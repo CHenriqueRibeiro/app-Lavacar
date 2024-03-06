@@ -30,10 +30,10 @@ import { db, firebaseAuth } from "../../Config/Firebase";
 import ContentLoader, { Rect } from "react-content-loader/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocation } from "../../context/LocationContext";
-import { Feather } from "@expo/vector-icons";
+/*import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 const stepsDistance = ["500mt", "1km", "2km", "4km", "8km"];
-const stepsPrice = ["30", "45", "60", "80", "120"];
+const stepsPrice = ["30", "45", "60", "80", "120"];*/
 const Card = ({ empresaData, onPress }) => {
   const navigation = useNavigation();
   const [showModal, setShowModal] = useState(false);
@@ -64,6 +64,7 @@ const Card = ({ empresaData, onPress }) => {
               userCoords,
               empresaCoords
             );
+
             setDistance(calculatedDistance);
           }
         }
@@ -89,7 +90,6 @@ const Card = ({ empresaData, onPress }) => {
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
-
     return distance;
   };
 
@@ -157,16 +157,16 @@ const Card = ({ empresaData, onPress }) => {
           inactiveDotOpacity={0.4}
           inactiveDotScale={0.6}
         />
-        <VStack width="100%" height="30%">
+        <VStack width="100%" height="30%" alignItems="center">
           <Heading color="$white" pl={6} textAlign="center">
             {empresaData.NomeDaEmpresa}
           </Heading>
           <HStack
+            width={"97%"}
             alignItems="center"
             justifyContent="space-between"
-            padding={5}
           >
-            <HStack flexDirection="column">
+            <HStack flexDirection="column" width={"60%"}>
               <HStack>
                 <Ionicons name="location-sharp" size={24} color="white" />
                 {distance !== null && (
@@ -179,11 +179,11 @@ const Card = ({ empresaData, onPress }) => {
               </HStack>
               <HStack>
                 <MaterialIcons name="attach-money" size={24} color="white" />
-                <Text color="white"> {empresaData.ValoresDosServicos} </Text>
+                <Text color="white">{empresaData.ValoresDosServicos} </Text>
               </HStack>
             </HStack>
             <Button
-              width={180}
+              width={"35%"}
               alignItems="center"
               justifyContent="space-around"
               bg="$white"
@@ -249,12 +249,12 @@ const Card = ({ empresaData, onPress }) => {
 const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [empresaDataList, setEmpresaDataList] = useState([]);
-  const [show, setShow] = useState(false);
+  /*const [show, setShow] = useState(false);
   const [selectedStep, setSelectedStep] = useState("");
-  const [selectedStepPrice, setSelectedStepPrice] = useState("");
+  const [selectedStepPrice, setSelectedStepPrice] = useState("");*/
   const [searchText, setSearchText] = useState("");
 
-  const handleFilter = () => {
+  /*const handleFilter = () => {
     setShow(true);
   };
   const handleFilterClean = () => {
@@ -267,7 +267,7 @@ const HomeScreen = () => {
   };
   const handleStepClickPrice = (step) => {
     setSelectedStepPrice(step);
-  };
+  };*/
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -296,6 +296,7 @@ const HomeScreen = () => {
   const filteredEmpresaDataList = empresaDataList.filter((empresaData) =>
     empresaData.NomeDaEmpresa.toLowerCase().includes(searchText.toLowerCase())
   );
+
   return (
     <ScrollView vertical pb={65}>
       {loading ? (

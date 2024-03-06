@@ -35,6 +35,8 @@ import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import MaskInput, { Masks } from "react-native-mask-input";
+import { firebaseAuth } from "../Config/Firebase";
+import { updateProfile } from "@firebase/auth";
 export default function Scheduling() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,6 +63,9 @@ export default function Scheduling() {
     try {
       await signUp(email, password, phone, name, carModel, motoModel);
 
+      const user = firebaseAuth.currentUser;
+      await updateDisplayNameInFirebase(user, name);
+
       setEmail("");
       setPassword("");
       setPhone("");
@@ -70,6 +75,19 @@ export default function Scheduling() {
       console.error("Erro ao finalizar o cadastro:", error.message);
     }
   };
+
+  const updateDisplayNameInFirebase = async (user, displayName) => {
+    try {
+      await updateProfile(user, { displayName });
+    } catch (error) {
+      console.error(
+        "Erro ao configurar o displayName no Firebase Authentication:",
+        error.message
+      );
+      throw error;
+    }
+  };
+
   const handleState = () => {
     setShowPassword((showState) => {
       return !showState;
@@ -409,7 +427,9 @@ export default function Scheduling() {
                   }}
                 >
                   <Ionicons name="chevron-back" size={20} color="#4D0288" />
-                  <ButtonText color="#4D0288"  textDecorationLine="none">Voltar para login</ButtonText>
+                  <ButtonText color="#4D0288" textDecorationLine="none">
+                    Voltar para login
+                  </ButtonText>
                 </Button>
               </HStack>
             </VStack>

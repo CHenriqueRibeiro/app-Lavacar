@@ -64,7 +64,7 @@ export default function Header() {
           color="white"
           paddingTop={1}
         >
-          {user === null ? "Faça seu login" : user.email}
+          {user === null ? "Faça seu login" : user.displayName}
         </Heading>
       </VStack>
       <VStack

@@ -101,7 +101,6 @@ const ServiceCard = ({ servicos }) => {
         agendamento = JSON.parse(agendamentoData);
       }
 
-      // Inclua o nome da empresa nos dados do agendamento
       agendamento = {
         ...agendamento,
         ...data,

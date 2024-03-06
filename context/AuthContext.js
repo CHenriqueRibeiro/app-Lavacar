@@ -36,11 +36,34 @@ export const AuthProvider = ({ children }) => {
         email,
         password
       );
+
       setUser(response.user);
+
       await saveUserDataToAsyncStorage(response.user.uid);
       alert("Login realizado com sucesso!");
     } catch (error) {
       alert("Não foi possível fazer o login: " + error.message);
+    }
+  };
+
+  const updateDisplayNameInFirestore = async (userId, displayName) => {
+    const firestore = getFirestore();
+    const userDocRef = doc(firestore, "Usuarios", userId);
+
+    try {
+      await setDoc(
+        userDocRef,
+        {
+          displayName: displayName || "",
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      console.error(
+        "Erro ao atualizar displayName no Firestore:",
+        error.message
+      );
+      throw error;
     }
   };
 
@@ -63,6 +86,7 @@ export const AuthProvider = ({ children }) => {
       );
 
       await saveUserDataToAsyncStorage(response.user.uid);
+      await updateDisplayNameInFirestore(response.user.uid, name);
 
       alert("Cadastro realizado com sucesso!");
     } catch (error) {
@@ -220,6 +244,7 @@ export const AuthProvider = ({ children }) => {
     readUserDataFromFirestore,
     updateVehicleDataInFirestore,
     personalData,
+    updateDisplayNameInFirestore,
   };
 
   return (
